@@ -1,15 +1,8 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+// src/store/index.ts
+import { createPinia } from 'pinia'
+import piniaPluginPersist from 'pinia-plugin-persist'
 
-Vue.use(Vuex)
+const store = createPinia()
+store.use(piniaPluginPersist)
 
-export default new Vuex.Store({
-  state: {
-  },
-  mutations: {
-  },
-  actions: {
-  },
-  modules: {
-  }
-})
+export default store
