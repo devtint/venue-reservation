@@ -5,12 +5,39 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    name: 'home',
+    // name: 'Layout',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () =>
-      import(/* webpackChunkName: "about" */ '../views/home/home.vue'),
+      import(/* webpackChunkName: "layout" */ '@/views/layout/layout.vue'),
+    meta: {
+      keepAlive: true, // 此组件需要被缓存
+      // deepth: 1,
+    },
+    children: [
+      {
+        path: '',
+        name: 'home',
+        // route level code-splitting
+        // this generates a separate chunk (home.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () =>
+          import(/* webpackChunkName: "home" */ '@/views/home/home.vue'),
+      },
+    ],
+  },
+  {
+    path: '/venue',
+    name: 'venue',
+    component: () =>
+      import(/* webpackChunkName: "venue" */ '@/views/venue/selectVenue.vue'),
+  },
+  {
+    path: '/select',
+    name: 'select',
+    component: () =>
+      import(/* webpackChunkName: "time" */ '@/views/select/selectDateTime.vue'),
   },
 ]
 
