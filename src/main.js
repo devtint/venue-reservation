@@ -7,6 +7,7 @@ import store from './store'
 import { globalRegister } from './global'
 
 Vue.use(globalRegister)
+Vue.use(store)
 
 Vue.config.productionTip = false
 

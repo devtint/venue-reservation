@@ -21,6 +21,21 @@
     <div class="submit">
       <van-button type="primary" @click="submit" block>确定时间</van-button>
     </div>
+
+    <!-- 温馨提示 -->
+    <!-- 温馨提示： 1.预约后请及时到场，如因特殊情况不能及时到场，请及时取消订单；
+    2.在预约时间到达前6个小时可免费取消订单，超过则不可取消，谢谢理解！ -->
+    <div class="tips">
+      <div class="tipsTitle">温馨提示:</div>
+      <div class="tipsContent">
+        <div>
+          1.预约后请及时到场，如因特殊情况不能及时到场，请及时取消订单；
+        </div>
+        <div>
+          2.在预约时间到达前6个小时可免费取消订单，超过则不可取消，谢谢理解！
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -60,5 +75,15 @@ export default {
   display: flex;
   justify-content: center;
   margin: 1rem auto;
+}
+.tips {
+  .tipsTitle {
+    // font-size: smaller;
+    margin: 1rem;
+  }
+  .tipsContent {
+    margin: 1rem;
+    font-size: smaller;
+  }
 }
 </style>

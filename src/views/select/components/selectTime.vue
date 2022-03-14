@@ -28,6 +28,7 @@
 </template>
 
 <script>
+import { useOrderStore } from '@/store/order'
 export default {
   name: '',
   components: {},
@@ -123,6 +124,8 @@ export default {
   methods: {
     selectItem(value) {
       console.log(value.time)
+      // 存储选择的时间段 pinia
+      useOrderStore().updateSubscribeTimeSlot(value.time)
       // 选择时间段变成选中样式
       this.timeLists.forEach(item => {
         if (item.id === value.id) {
