@@ -43,6 +43,8 @@
 import detailCard from './components/detailCard.vue'
 import selectDate from './components/selectDate.vue'
 import selectTime from './components/selectTime.vue'
+
+import { useOrderStore } from '@/store/order'
 export default {
   name: 'selectDateTime',
   components: {
@@ -64,6 +66,13 @@ export default {
     },
     submit() {
       console.log('submit')
+      const {
+        getSubscribeDate: selectDate,
+        getSubscribeWeek: selectWeek,
+        getSubscribeTimeSlot: selectTimeSlot,
+      } = useOrderStore()
+
+      console.log(selectDate, selectWeek, selectTimeSlot)
     },
   },
 }

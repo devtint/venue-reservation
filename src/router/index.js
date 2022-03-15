@@ -4,6 +4,16 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '/login',
+    name: 'login',
+    component: () => import('@/views/login/login.vue'),
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: () => import('@/views/register/register.vue'),
+  },
+  {
     path: '/',
     // name: 'Layout',
     // route level code-splitting
@@ -25,6 +35,18 @@ const routes = [
         component: () =>
           import(/* webpackChunkName: "home" */ '@/views/home/home.vue'),
       },
+      {
+        path: '/orders',
+        name: 'orders',
+        component: () =>
+          import(/* webpackChunkName: "orders" */ '@/views/orders/orders.vue'),
+      },
+      {
+        path: '/my',
+        name: 'my',
+        component: () =>
+          import(/* webpackChunkName: "my" */ '@/views/my/my.vue'),
+      },
     ],
   },
   {
@@ -37,7 +59,21 @@ const routes = [
     path: '/select',
     name: 'select',
     component: () =>
-      import(/* webpackChunkName: "time" */ '@/views/select/selectDateTime.vue'),
+      import(
+        /* webpackChunkName: "time" */ '@/views/select/selectDateTime.vue'
+      ),
+  },
+  {
+    path: '/confirm',
+    name: 'confirm',
+    component: () => import('@/views/confirm/confirmOrder.vue'),
+    // 只有经过身份验证的用户才能创建订单
+    // meta: { requiresAuth: true },
+  },
+  {
+    path: '/rules',
+    name: 'rules',
+    component: () => import('@/views/confirm/page/orderRules.vue'),
   },
 ]
 

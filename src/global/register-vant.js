@@ -51,6 +51,7 @@ import {
   AddressEdit,
   Dialog,
   Search,
+  ActionSheet,
 } from 'vant'
 
 const components = [
@@ -105,6 +106,7 @@ const components = [
   AddressEdit,
   Dialog,
   Search,
+  ActionSheet,
 ]
 
 function install(Vue) {
