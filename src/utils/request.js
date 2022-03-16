@@ -14,7 +14,7 @@ import { BASE_URL } from '@/global/config'
 // 我们通过这个实例去发请求,把需要的配置 配置给这个实例来处理
 const request = axios.create({
   baseURL: BASE_URL, // 请求的基础路径
-  withCredentials: true, // 跨域请求时是否需要使用凭证
+  // withCredentials: true, // 跨域请求时是否需要使用凭证
   // 定义后端返回的原始数据的处理
   // 参数 data 就是后端返回的原始数据(未经处理的 JSON格式字符串)
   transformResponse: [

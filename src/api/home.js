@@ -12,6 +12,6 @@ import { request } from '@/utils'
 export const getAdImages = () => {
   return request({
     method: 'GET',
-    url: '/search/queryCarRentalADImg',
+    url: '/search/querySportsHallsBanner',
   })
 }

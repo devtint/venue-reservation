@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "commit": "cz"
+    "commit": "cz",
+    "deployment": "vue-cli-service build && rm -rf ~/tomcat7/webapps/venueReservationMobile/* && cp -rf ./dist/* ~/tomcat7/webapps/venueReservationMobile/ && echo '--部署完成-- [http://www.paytunnel.cn/venueReservationMobile]'"
   },
   "dependencies": {
     "@vue/composition-api": "^1.4.9",
@@ -13,6 +14,7 @@
     "commitizen": "^4.2.4",
     "core-js": "^3.6.5",
     "cz-conventional-changelog": "^3.3.0",
+    "jsencrypt": "^3.2.1",
     "json-bigint": "^1.0.0",
     "pinia": "^2.0.11",
     "pinia-plugin-persist": "^0.0.93",

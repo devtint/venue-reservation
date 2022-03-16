@@ -21,27 +21,34 @@
 <script>
 import { BASE_DOMAIN } from '@/global/config'
 import { getAdImages } from '@/api/home'
-import { ref } from '@vue/composition-api'
 export default {
   name: 'SwipeAd',
   components: {},
-  setup(props) {
-    // let adImagesLink = ref([])
+  props: {},
+  data() {
+    return {
+      adImagesLink: [],
+    }
+  },
+  computed: {},
+  watch: {},
+  created() {
     // 获取轮播图图片
     // getAdImages()
     //   .then(res => {
     //     if (res.data.rs !== '1') {
+    //       console.log(res.data.rs)
     //       return false
     //     }
     //     let adImages = res.data.queryCarRentalADImg
     //     console.log(adImages)
-    //     adImagesLink = adImages.map(item => {
+    //     this.adImagesLink = adImages.map(item => {
     //       if (item.picFile) {
     //         item.picFile = `${BASE_DOMAIN}/socketServer/images/cardMall/imgsrc/${item.picFile}`
     //       }
     //       return item
     //     })
-    //     console.log('this.adImagesLink:', adImagesLink)
+    //     console.log('this.adImagesLink:', this.adImagesLink)
     //     // 广告图片链接 存入vuex
     //     // this.setAdImagesLink(this.adImagesLink)
     //     this.isLoading = false
@@ -49,25 +56,9 @@ export default {
     //   .catch(err => {
     //     console.log(err)
     //   })
-
-    return {
-      // adImagesLink,
-    }
   },
-  // props: {
-  //   adImagesLink: {
-  //     type: Array,
-  //     default: () => ({}),
-  //   },
-  // },
-  // data() {
-  //   return {}
-  // },
-  // computed: {},
-  // watch: {},
-  // created() {},
-  // mounted() {},
-  // methods: {},
+  mounted() {},
+  methods: {},
 }
 </script>
 
