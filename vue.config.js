@@ -9,6 +9,16 @@ module.exports = {
     // public: '192.1.2.110:4399',
     // hot: true,
     // disableHostCheck: true,
+    proxy: {
+      '/api': {
+        // 这个aaa 要与 axios.js 文件中的 baseURL 值对应
+        target: 'http://www.paytunnel.cn/venueReservationServerRH', // 你接口的域名
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api': '',
+        },
+      },
+    },
   },
   css: {
     loaderOptions: {

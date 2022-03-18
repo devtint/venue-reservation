@@ -15,3 +15,28 @@ export const getAdImages = () => {
     url: '/search/querySportsHallsBanner',
   })
 }
+
+// (查询租场通知)querySportsHallsNotice
+export const getNotice = () => {
+  return request({
+    method: 'GET',
+    url: '/search/querySportsHallsNotice',
+  })
+}
+
+// (查询运动场馆列表)querySportsHalls
+export const getSportsHalls = () => {
+  return request({
+    method: 'GET',
+    url: '/search/querySportsHalls',
+  })
+}
+
+// (根据搜索词查询运动场馆列表)querySportsHallsBySearch
+export const searchSportsHalls = params => {
+  return request({
+    method: 'GET',
+    url: '/search/querySportsHallsBySearch',
+    params,
+  })
+}

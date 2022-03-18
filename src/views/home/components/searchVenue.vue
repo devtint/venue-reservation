@@ -14,6 +14,9 @@
 </template>
 
 <script>
+import { searchSportsHalls } from '@/api/home'
+
+import { useHomeStore } from '@/store/home'
 export default {
   name: '',
   components: {},
@@ -30,6 +33,16 @@ export default {
   methods: {
     onSearch() {
       console.log('search:', this.value)
+      searchSportsHalls({
+        keyWordsFld: this.value,
+      }).then(res => {
+        if (res.data.rs !== '1') {
+          console.log(res.data.rs)
+          return
+        }
+        console.log(res.data.querySportsHallsBySearch)
+        useHomeStore().setSportsHalls(res.data.querySportsHallsBySearch)
+      })
     },
   },
 }

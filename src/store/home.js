@@ -6,17 +6,17 @@ export const useHomeStore = defineStore({
   id: 'home', // id必填，且需要唯一
   state: () => {
     return {
-      name: '张三',
+      sportsHalls: [], // 运动场馆列表
     }
   },
   getters: {
-    fullName: state => {
-      return state.name + '丰'
+    getSportsHalls: state => {
+      return state.sportsHalls
     },
   },
   actions: {
-    updateName(name) {
-      this.name = name
+    setSportsHalls(payload) {
+      this.sportsHalls = payload
     },
     // // 异步actions
     // async login(account, pwd) {

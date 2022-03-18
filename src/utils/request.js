@@ -14,7 +14,7 @@ import { BASE_URL } from '@/global/config'
 // 我们通过这个实例去发请求,把需要的配置 配置给这个实例来处理
 const request = axios.create({
   baseURL: BASE_URL, // 请求的基础路径
-  // withCredentials: true, // 跨域请求时是否需要使用凭证
+  withCredentials: true, // 跨域请求时是否需要使用凭证
   // 定义后端返回的原始数据的处理
   // 参数 data 就是后端返回的原始数据(未经处理的 JSON格式字符串)
   transformResponse: [
@@ -51,6 +51,9 @@ request.interceptors.request.use(
     // 然后我们就可以在允许请求出去之前定制统一业务功能处理
     // 例如：统一的设置 token
 
+    // 如果是登录请求,那么执行完再执行其它接口请求
+
+    // 如果是 post 请求,并且请求的数据是对象格式
     if (config.method === 'post') {
       // console.log('old config.data', config.data)
       // 设置请求头 发送的数据是x-www-form-urlencoded 格式

@@ -12,27 +12,31 @@
           @load="onLoad"
         >
           <van-cell-group inset>
-            <van-cell center>
-              <van-card
-                centered
-                desc="场地类型:排球场、篮球场"
-                title="德保体育中心"
-              >
+            <van-cell center v-for="(item, index) in list" :key="index">
+              <van-card centered>
+                <template #title>
+                  <div>
+                    <div class="itemTitle">{{ item.venueName }}</div>
+                  </div>
+                </template>
+                <template #desc>
+                  <div class="itemDesc">场地类型：{{ item.siteTypes }}</div>
+                </template>
                 <template #thumb>
                   <div class="thumb">
                     <van-image
                       width="6rem"
                       height="6rem"
                       fit="contain"
-                      src="https://img.yzcdn.cn/vant/cat.jpeg"
+                      :src="item.venuePhoto"
                     />
                   </div>
                 </template>
 
                 <template #tags>
                   <div>
-                    <div class="van-ellipsis">荣盛街与荣盛街二巷交叉路口</div>
-                    <div>电话:0776-3806789</div>
+                    <div class="van-ellipsis">{{ item.address }}</div>
+                    <div>电话:{{ item.phone }}</div>
                   </div>
                 </template>
               </van-card>
@@ -62,6 +66,9 @@
 </template>
 
 <script>
+import { getSportsHalls } from '@/api/home'
+
+import { useHomeStore } from '@/store/home'
 export default {
   name: '',
   components: {},
@@ -69,13 +76,23 @@ export default {
   data() {
     return {
       list: [],
+      newList: [],
       loading: false,
       finished: false,
       refreshing: false,
     }
   },
-  computed: {},
-  watch: {},
+  computed: {
+    sportsHalls() {
+      return useHomeStore().getSportsHalls
+    },
+  },
+  watch: {
+    sportsHalls(newValue, oldValue) {
+      console.log('newValue', newValue)
+      this.list = newValue
+    },
+  },
   created() {},
   mounted() {},
   methods: {
@@ -83,17 +100,20 @@ export default {
       setTimeout(() => {
         if (this.refreshing) {
           this.list = []
+          this.newList = []
           this.refreshing = false
         }
 
-        for (let i = 0; i < 10; i++) {
-          this.list.push(this.list.length + 1)
-        }
-        this.loading = false
+        this.loadSportsHalls()
 
-        if (this.list.length >= 40) {
-          this.finished = true
-        }
+        // for (let i = 0; i < 10; i++) {
+        //   this.list.push(this.list.length + 1)
+        // }
+        // this.loading = false
+
+        // if (this.list.length >= 40) {
+        //   this.finished = true
+        // }
       }, 1000)
     },
     onRefresh() {
@@ -108,6 +128,29 @@ export default {
     changeVenue() {
       this.$router.push('/venue')
     },
+    loadSportsHalls() {
+      getSportsHalls().then(res => {
+        if (res.data.rs !== '1') {
+          console.log(res.data.rs)
+        } else {
+          console.log('querySportsHalls', res.data.querySportsHalls)
+          let hallList = res.data.querySportsHalls
+          this.newList = this.newList.concat(hallList)
+
+          useHomeStore().setSportsHalls(this.newList)
+          this.list = this.sportsHalls
+
+          console.log('list', this.list)
+          if (
+            this.list.length >= parseInt(res.data.querySportsHalls_totalRecNum)
+          ) {
+            this.finished = true
+          }
+
+          this.loading = false
+        }
+      })
+    },
   },
 }
 </script>
@@ -115,6 +158,10 @@ export default {
 <style lang="less" scoped>
 h3 {
   margin: 0.5rem 1.5rem;
+}
+.itemTitle {
+  font-size: 1rem;
+  color: black;
 }
 .thumb {
   margin-left: -1rem;

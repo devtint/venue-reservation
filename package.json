@@ -20,6 +20,7 @@
     "pinia-plugin-persist": "^0.0.93",
     "qs": "^6.10.3",
     "vant": "^2.12.44",
+    "vConsole": "npm:vconsole@^3.13.0",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0"
   },

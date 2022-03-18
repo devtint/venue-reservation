@@ -4,6 +4,8 @@ import router from './router'
 import store from './store'
 import axios from 'axios'
 import JSEncrypt from 'jsencrypt'
+import VConsole from 'vconsole'
+
 // 全局引入
 import { globalRegister } from './global'
 
@@ -13,6 +15,7 @@ import global_ from '@/global/config_global'
 import { silenceLogin, checkLogin } from '@/api/user'
 import { Dialog } from 'vant'
 
+let vConsole = new VConsole()
 Vue.use(globalRegister)
 Vue.use(store)
 
@@ -191,23 +194,23 @@ Vue.prototype.login = function (callback) {
   // this.dataLoading = true
   let storage = window.localStorage
   let param = decodeURI(location.search)
-  if (param == '') {
-    let redirect =
-      'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' +
-      storage.getItem('appid') +
-      '&redirect_uri=http%3A%2F%2F' +
-      global_.domain +
-      '%2f' +
-      global_.clientName +
-      '%3fappid%3d' +
-      storage.getItem('appid') +
-      '&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect'
-    window.location.href = redirect
-    console.log('redirect:::' + redirect)
-    return
-  } else {
-    storage.setItem('codeAppID', param)
-  }
+  // if (param == '') {
+  //   let redirect =
+  //     'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' +
+  //     storage.getItem('appid') +
+  //     '&redirect_uri=http%3A%2F%2F' +
+  //     global_.domain +
+  //     '%2f' +
+  //     global_.clientName +
+  //     '%3fappid%3d' +
+  //     storage.getItem('appid') +
+  //     '&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect'
+  //   window.location.href = redirect
+  //   console.log('redirect:::' + redirect)
+  //   return
+  // } else {
+  //   storage.setItem('codeAppID', param)
+  // }
 
   // var REALTERMTYPE = ''
   let code = ''
@@ -276,6 +279,7 @@ Vue.prototype.login = function (callback) {
       storage.setItem('TELLERCOMPANY', response.data.TELLERCOMPANY)
 
       storage.setItem('guestMemberID', response.data.userName)
+      storage.setItem('user', JSON.stringify(response.data))
       that.checklogin()
 
       that.schoolName = storage.getItem('TELLERCOMPANY')
