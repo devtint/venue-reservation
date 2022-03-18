@@ -16,11 +16,15 @@
               <van-card centered>
                 <template #title>
                   <div>
-                    <div class="itemTitle">{{ item.venueName }}</div>
+                    <div class="itemTitle van-multi-ellipsis">
+                      {{ item.venueName }}
+                    </div>
                   </div>
                 </template>
                 <template #desc>
-                  <div class="itemDesc">场地类型：{{ item.siteTypes }}</div>
+                  <div class="itemDesc van-multi-ellipsis">
+                    场地类型：{{ item.siteTypes }}
+                  </div>
                 </template>
                 <template #thumb>
                   <div class="thumb">
@@ -158,10 +162,6 @@ export default {
 <style lang="less" scoped>
 h3 {
   margin: 0.5rem 1.5rem;
-}
-.itemTitle {
-  font-size: 1rem;
-  color: black;
 }
 .thumb {
   margin-left: -1rem;

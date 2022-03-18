@@ -1,6 +1,6 @@
 <template>
   <div class="detailCard">
-    <van-card desc="位于场馆左侧，可用于比赛、练习、大众健身等，欢迎预定。">
+    <van-card>
       <template #thumb>
         <div class="thumb">
           <van-image
@@ -12,7 +12,12 @@
         </div>
       </template>
       <template #title>
-        <h3 class="">1号篮球场</h3>
+        <h3 class="van-multi-ellipsis">1号篮球场</h3>
+      </template>
+      <template #desc>
+        <h3 class="van-multi-ellipsis--l2">
+          位于场馆左侧，可用于比赛、练习、大众健身等，欢迎预定。
+        </h3>
       </template>
     </van-card>
   </div>

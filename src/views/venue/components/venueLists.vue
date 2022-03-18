@@ -14,11 +14,7 @@
         >
           <van-cell-group inset>
             <van-cell center>
-              <van-card
-                centered
-                desc="室内球场：篮球比赛、练习、大众健身"
-                title="1号篮球场"
-              >
+              <van-card centered>
                 <template #thumb>
                   <div class="thumb">
                     <van-image
@@ -29,21 +25,18 @@
                     />
                   </div>
                 </template>
+                <template #title>
+                  <div class="itemTitle van-multi-ellipsis">1号篮球场</div>
+                </template>
 
-                <!-- <template #tags>
-                  <div>
-                    <div class="van-ellipsis">荣盛街与荣盛街二巷交叉路口</div>
-                    <div>电话:0776-3806789</div>
+                <template #desc>
+                  <div class="van-ellipsis--l2">
+                    室内球场：篮球比赛、练习、大众健身
                   </div>
-                </template> -->
+                </template>
               </van-card>
               <template #right-icon>
                 <div class="resBtn">
-                  <!-- 场地距离 -->
-                  <!-- <div>
-                    <span><van-icon name="location-o" /></span>
-                    <span>1.2km</span>
-                  </div> -->
                   <van-button
                     type="primary"
                     size="small"

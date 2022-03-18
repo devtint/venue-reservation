@@ -4,7 +4,6 @@ import router from './router'
 import store from './store'
 import axios from 'axios'
 import JSEncrypt from 'jsencrypt'
-import VConsole from 'vconsole'
 
 // 全局引入
 import { globalRegister } from './global'
@@ -15,7 +14,10 @@ import global_ from '@/global/config_global'
 import { silenceLogin, checkLogin } from '@/api/user'
 import { Dialog } from 'vant'
 
-let vConsole = new VConsole()
+// 使用vConsole插件进行移动端调试 --开发环境
+import VConsole from 'vconsole'
+const vConsole = new VConsole()
+
 Vue.use(globalRegister)
 Vue.use(store)
 

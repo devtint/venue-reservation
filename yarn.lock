@@ -8412,7 +8412,7 @@
   "resolved" "https://registry.npmmirror.com/vary/-/vary-1.1.2.tgz"
   "version" "1.1.2"
 
-"vConsole@npm:vconsole@^3.13.0":
+"vconsole@^3.13.0":
   "integrity" "sha512-YangFLXG0rcorOiR4dwfQPB3D/odFuVc6Z23mHnU2DNaUIpL81HuF7dT+9TG6N3IfXt+5jRFZn8IlNP4yQYLIg=="
   "resolved" "https://registry.npmmirror.com/vconsole/-/vconsole-3.13.0.tgz"
   "version" "3.13.0"
@@ -8686,6 +8686,11 @@
   "integrity" "sha512-OqedPIGOfsDlo31UNwYbCFMSaO9m9G/0faIHj5/dZFDMFqPTcx6UwqyOy3COEaEOg/9VsGIpdqn62W5KhoKSpg=="
   "resolved" "https://registry.npmmirror.com/websocket-extensions/-/websocket-extensions-0.1.4.tgz"
   "version" "0.1.4"
+
+"weixin-js-sdk@^1.6.0":
+  "integrity" "sha512-3IYQH7aalJGFJrwdT3epvTdR1MboMiH7vIZ5BRL2eYOJ12BNah7csoMkmSZzkq1+l92sSq29XdTCVjCJoK2sBQ=="
+  "resolved" "https://registry.npmmirror.com/weixin-js-sdk/-/weixin-js-sdk-1.6.0.tgz"
+  "version" "1.6.0"
 
 "which-boxed-primitive@^1.0.2":
   "integrity" "sha512-bwZdv0AKLpplFY2KZRX6TvyuN7ojjr7lwkg6ml0roIy9YeuSr7JS372qlNW18UQYzgYK9ziGcerWqZOmEn9VNg=="
