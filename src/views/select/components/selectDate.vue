@@ -33,9 +33,26 @@ export default {
     },
   },
   watch: {},
-  created() {},
+  created() {
+    // 默认选择明天
+    this.date = this.getTomorrow()
+  },
   mounted() {},
   methods: {
+    getTomorrow() {
+      let date = new Date()
+      // date.setDate(date.getDate() + 1)
+      const weekMap = ['日', '一', '二', '三', '四', '五', '六']
+      const week = weekMap[date.getDay()]
+      // 存储日期 pinia
+      // 格式化日期20220910
+      const year = date.getFullYear()
+      const month = date.getMonth() + 1
+      const day = date.getDate() + 1 // 默认明天
+      const dateStr = `${year}${month}${day}`
+      useOrderStore().updateSubscribeDate(dateStr)
+      return `${year}年${month}月${day}日 星期${week}`
+    },
     formatDate(date) {
       console.log(date)
       // 格式化日期 星期

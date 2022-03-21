@@ -16,3 +16,12 @@ export const getSportsHallFields = params => {
     params,
   })
 }
+
+// (查询场地预约信息)querySportsSiteInfor
+export const getSportSiteResInfo = params => {
+  return request({
+    method: 'GET',
+    url: '/search/querySportsSiteInfor',
+    params,
+  })
+}

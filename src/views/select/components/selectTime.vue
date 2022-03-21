@@ -7,18 +7,20 @@
       <van-grid :column-num="3" :gutter="10" clickable>
         <van-grid-item
           v-for="(value, index) in timeLists"
-          :class="{ selected: value.selected }"
+          :class="{ selected: value.selected, disabled: value.avaNum === '0' }"
           :key="index"
           @click="selectItem(value)"
         >
           <template #icon>
             <div class="time">
-              <div>{{ value.time }}</div>
+              <div>{{ value.timeSlot }}</div>
             </div>
           </template>
           <template #text>
             <div class="text">
-              <div>{{ value.price }}</div>
+              <div>
+                {{ value.prdPrice !== '' ? '￥' + value.prdPrice : '免费' }}
+              </div>
             </div>
           </template>
         </van-grid-item>
@@ -29,110 +31,77 @@
 
 <script>
 import { useOrderStore } from '@/store/order'
+import { useAreaStore } from '@/store/area'
+import { getSportSiteResInfo } from '@/api/area'
 export default {
   name: '',
   components: {},
   props: {},
   data() {
     return {
-      timeLists: [
-        {
-          id: 1,
-          time: '7:00-08:00',
-          price: '免费',
-          selected: false,
-        },
-        {
-          id: 2,
-          time: '8:00-09:00',
-          price: '免费',
-          selected: false,
-        },
-        {
-          id: 3,
-          time: '9:00-10:00',
-          price: '免费',
-          selected: false,
-        },
-        {
-          id: 4,
-          time: '10:00-11:00',
-          price: '免费',
-          selected: false,
-        },
-        {
-          id: 5,
-          time: '11:00-12:00',
-          price: '免费',
-          selected: false,
-        },
-        {
-          id: 6,
-          time: '12:00-13:00',
-          price: '免费',
-          selected: false,
-        },
-        {
-          id: 7,
-          time: '13:00-14:00',
-          price: '免费',
-          selected: false,
-        },
-        {
-          id: 8,
-          time: '14:00-15:00',
-          price: '免费',
-          selected: false,
-        },
-        {
-          id: 9,
-          time: '15:00-16:00',
-          price: '免费',
-          selected: false,
-        },
-        {
-          id: 10,
-          time: '16:00-17:00',
-          price: '免费',
-          selected: false,
-        },
-        {
-          id: 11,
-          time: '17:00-18:00',
-          price: '免费',
-          selected: false,
-        },
-        {
-          id: 12,
-          time: '18:00-19:00',
-          price: '免费',
-          selected: false,
-        },
-        {
-          id: 13,
-          time: '19:00-20:00',
-          price: '免费',
-          selected: false,
-        },
-      ],
+      timeLists: [],
     }
   },
-  computed: {},
-  watch: {},
-  created() {},
+  computed: {
+    currentArea() {
+      return useAreaStore().getCurrentArea
+    },
+    subscribeDate() {
+      return useOrderStore().getSubscribeDate
+    },
+  },
+  watch: {
+    subscribeDate: {
+      handler(newVal) {
+        this.loadSportSiteResInfo()
+      },
+      // immediate: true,
+    },
+  },
+  created() {
+    this.loadSportSiteResInfo()
+  },
   mounted() {},
   methods: {
     selectItem(value) {
-      console.log(value.time)
+      console.log(value.timeSlot)
       // 存储选择的时间段 pinia
-      useOrderStore().updateSubscribeTimeSlot(value.time)
+      useOrderStore().updateSubscribeTimeSlot(value.timeSlot)
       // 选择时间段变成选中样式
       this.timeLists.forEach(item => {
-        if (item.id === value.id) {
+        if (item.prdNo === value.prdNo) {
           item.selected = true
         } else {
           item.selected = false
         }
+      })
+    },
+    loadSportSiteResInfo() {
+      // appoDate:20220322
+      // venueName:天河体育中心体育场
+      // siteType:篮球场
+      // siteNumber:1号场
+      // actNo:202112042249501338950598
+      let param = {
+        // appoDate: '20220322',
+        appoDate: this.subscribeDate,
+        venueName: this.currentArea.venueName,
+        siteType: this.currentArea.siteType,
+        siteNumber: this.currentArea.siteNumber,
+        actNo: this.currentArea.actNo,
+      }
+      getSportSiteResInfo(param).then(res => {
+        if (res.data.rs !== '1') {
+          console.log('获取场地预约信息失败', res.data.rs)
+          return
+        }
+        this.timeLists = res.data.querySportsSiteInfor.map(item => {
+          return {
+            ...item,
+            selected: false,
+          }
+        })
+        console.log(this.timeLists)
       })
     },
   },
@@ -172,6 +141,15 @@ export default {
     color: #fff;
     .text {
       color: #fff;
+    }
+  }
+}
+.disabled {
+  /deep/ .van-grid-item__content {
+    background: #dfe3e7;
+    color: rgb(77, 74, 74);
+    .text {
+      color: rgb(80, 76, 76);
     }
   }
 }

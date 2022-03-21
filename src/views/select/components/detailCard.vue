@@ -7,7 +7,7 @@
             width="5rem"
             height="5rem"
             fit="contain"
-            :src="currentSportHall.siteFile"
+            :src="currentArea.siteFile"
           />
         </div>
       </template>
