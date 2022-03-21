@@ -27,6 +27,7 @@
       <div class="home-content-venue">
         <venueLists v-if="isLogin"></venueLists>
       </div>
+      <van-button @click="testClick">按钮</van-button>
     </div>
   </div>
 </template>
@@ -39,10 +40,12 @@ import venueLists from './components/venueLists.vue'
 import { getNotice } from '@/api/home'
 import { silenceLogin } from '@/api/user'
 
+import { useMapStore } from '@/store/map'
+
 // import { BASE_DOMAIN } from '@/global/config'
 /* 引入config文件模块 */
 import global_ from '@/global/config_global'
-
+import wx from 'weixin-js-sdk'
 export default {
   name: 'home',
   components: { SwipeAd, searchVenue, venueLists },
@@ -146,6 +149,7 @@ export default {
           storage.setItem('TELLERCOMPANY', res.data.TELLERCOMPANY)
           this.schoolName = storage.getItem('TELLERCOMPANY')
 
+          this.wxConfig()
           this.loadNotice()
         }
       })
@@ -157,6 +161,38 @@ export default {
         } else {
           this.noticeBarText = res.data.querySportsHallsNotice[0].content
         }
+      })
+    },
+    testClick() {
+      wx.getLocation({
+        type: 'gcj02', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+        success: function (res) {
+          var latitude = res.latitude // 纬度，浮点数，范围为90 ~ -90
+          var longitude = res.longitude // 经度，浮点数，范围为180 ~ -180。
+          var speed = res.speed // 速度，以米/每秒计
+          var accuracy = res.accuracy // 位置精度
+          console.log(latitude, longitude, speed, accuracy)
+          wx.openLocation({
+            latitude: Number(res.latitude), // 纬度，浮点数，范围为90 ~ -90
+            longitude: Number(res.longitude), // 经度，浮点数，范围为180 ~ -180。
+            name: 'abcTest', // 位置名
+            address: 'ttttest', // 地址详情说明
+            scale: 17, // 地图缩放级别,整型值,范围从1~28。默认为最大
+            infoUrl: '', // 在查看位置界面底部显示的超链接,可点击跳转
+            success(openRes) {
+              console.log('打开地图成功')
+              console.log(openRes)
+            },
+            fail(err) {
+              console.log('打开地图失败')
+              console.log(err)
+            },
+          })
+        },
+        fail(err) {
+          console.log('获取位置失败')
+          console.log(err)
+        },
       })
     },
   },

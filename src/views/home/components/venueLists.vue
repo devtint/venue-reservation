@@ -16,13 +16,13 @@
               <van-card centered>
                 <template #title>
                   <div>
-                    <div class="itemTitle van-multi-ellipsis">
+                    <div class="itemTitle van-ellipsis">
                       {{ item.venueName }}
                     </div>
                   </div>
                 </template>
                 <template #desc>
-                  <div class="itemDesc van-multi-ellipsis">
+                  <div class="itemDesc van-ellipsis">
                     场地类型：{{ item.siteTypes }}
                   </div>
                 </template>
@@ -38,18 +38,16 @@
                 </template>
 
                 <template #tags>
-                  <div>
-                    <div class="van-ellipsis">{{ item.address }}</div>
-                    <div>电话:{{ item.phone }}</div>
-                  </div>
+                  <div class="van-ellipsis">{{ item.address }}</div>
+                  <div>电话:{{ item.phone }}</div>
                 </template>
               </van-card>
               <template #right-icon>
                 <div>
                   <!-- 场地距离 -->
-                  <div>
+                  <div :onload="mapDistance(item.city, item.address)">
                     <span><van-icon name="location-o" /></span>
-                    <span>1.2km</span>
+                    <span>{{ distance }}km</span>
                   </div>
                   <van-button
                     type="primary"
@@ -71,8 +69,11 @@
 
 <script>
 import { getSportsHalls } from '@/api/home'
-
+import wx from 'weixin-js-sdk'
 import { useHomeStore } from '@/store/home'
+import { useMapStore } from '@/store/map'
+
+// import { TMap } from '@/api/map'
 export default {
   name: '',
   components: {},
@@ -84,6 +85,7 @@ export default {
       loading: false,
       finished: false,
       refreshing: false,
+      distance: 0,
     }
   },
   computed: {
@@ -100,6 +102,54 @@ export default {
   created() {},
   mounted() {},
   methods: {
+    mapDistance(region, address) {
+      wx.getLocation({
+        type: 'gcj02', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+        success: res => {
+          let latitude = res.latitude // 纬度，浮点数，范围为90 ~ -90
+          let longitude = res.longitude // 经度，浮点数，范围为180 ~ -180。
+          let speed = res.speed // 速度，以米/每秒计
+          let accuracy = res.accuracy // 位置精度
+          // console.log(latitude, longitude, speed, accuracy)
+          useMapStore().setCurrentLocation({
+            latitude,
+            longitude,
+          })
+          this.getLocation(region, address)
+        },
+      })
+    },
+    // 根据地址获取经纬度
+    getLocation(region, address) {
+      let lat, lng
+      let map = new TMap.service.Geocoder()
+      let data = map.getLocation({
+        address: `${region}${address}`,
+        // region: region,
+      })
+      data.then(res => {
+        console.log(res)
+        console.log(res.result.location)
+        lat = res.result.location.lat
+        lng = res.result.location.lng
+        let latitude = useMapStore().getCurrentLocatin.latitude
+        let longitude = useMapStore().getCurrentLocatin.longitude
+        console.log('当前位置经纬度', latitude, longitude)
+        this.getDistance(latitude, longitude, lat, lng)
+      })
+    },
+    getDistance(cLat, cLng, tLat, tLng) {
+      // 计算路径的实际距离
+      // 当前位置 和 目标位置
+      let currentLocation = new TMap.LatLng(cLat, cLng)
+      let targetLocation = new TMap.LatLng(tLat, tLng)
+      let path = [currentLocation, targetLocation]
+      var distance = TMap.geometry.computeDistance(path)
+      // var infoDom = document.getElementById('info');
+      // infoDom.innerText = `腾讯北京总部到圆明园的直线距离为${distance.toFixed(2)}米`;
+      console.log('计算距离:', (distance / 1000).toFixed(2) + 'km')
+      this.distance = (distance / 1000).toFixed(2)
+    },
     onLoad() {
       setTimeout(() => {
         if (this.refreshing) {

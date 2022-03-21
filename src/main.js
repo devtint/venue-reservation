@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import axios from 'axios'
 import JSEncrypt from 'jsencrypt'
+import wx from 'weixin-js-sdk'
 
 // 全局引入
 import { globalRegister } from './global'
@@ -170,7 +171,10 @@ Vue.prototype.wxConfig = function () {
   var url = encodeURIComponent(location.href.split('#')[0])
   var that = this
   this.$http
-    .get('/getJSSDKSignature?url=' + url)
+    .get(
+      'http://www.paytunnel.cn/venueReservationServerRH/getJSSDKSignature?url=' +
+        url
+    )
     .then(function (res) {
       var appId = res.data.appId
       var timestamp = res.data.timestamp
@@ -183,7 +187,13 @@ Vue.prototype.wxConfig = function () {
         timestamp: timestamp,
         nonceStr: nonceStr,
         signature: signature,
-        jsApiList: ['onMenuShareAppMessage', 'addCard', 'scanQRCode'],
+        jsApiList: [
+          'onMenuShareAppMessage',
+          'addCard',
+          'scanQRCode',
+          'getLocation',
+          'openLocation',
+        ],
       })
     })
     .catch(function (error) {
