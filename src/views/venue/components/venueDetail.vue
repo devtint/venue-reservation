@@ -6,7 +6,7 @@
         <div class="title">
           <div>{{ currentSportHall.venueName }}</div>
         </div>
-        <div class="location">
+        <div class="location" @click="navigation">
           <span><van-icon name="guide-o" /></span>
           <span>导航</span>
         </div>
@@ -44,12 +44,16 @@
 
 <script>
 import { useHomeStore } from '@/store/home'
+import wx from 'weixin-js-sdk'
 export default {
   name: '',
   components: {},
   props: {},
   data() {
-    return {}
+    return {
+      latitude: 0,
+      longitude: 0,
+    }
   },
   computed: {
     currentSportHall() {
@@ -59,7 +63,52 @@ export default {
   watch: {},
   created() {},
   mounted() {},
-  methods: {},
+  methods: {
+    navigation() {
+      this.$toast('正在跳转导航...')
+      // 根据地址获取经纬度
+      let region = this.currentSportHall.city
+      let address = this.currentSportHall.address
+      // getLocation(region, address){
+        // let lat, lng
+        let map = new TMap.service.Geocoder()
+        let data = map.getLocation({
+          address: `${region}${address}`,
+          // region: region,
+        })
+        data.then(res => {
+          console.log(res)
+          console.log(res.result.location)
+          this.latitude = res.result.location.lat
+          this.longitude = res.result.location.lng
+          // this.latitude = useMapStore().getCurrentLocatin.latitude
+          // this.longitude = useMapStore().getCurrentLocatin.longitude
+          console.log('当前位置经纬度', this.latitude, this.longitude)
+          this.openMap()
+          // this.getDistance(this.latitude, this.longitude, lat, lng)
+        })
+      // }
+      
+    },
+    openMap(){
+      wx.openLocation({
+        latitude: Number(this.latitude), // 纬度，浮点数，范围为90 ~ -90
+        longitude: Number(this.longitude), // 经度，浮点数，范围为180 ~ -180。
+        name: this.currentSportHall.venueName, // 位置名
+        address: this.currentSportHall.address, // 地址详情说明
+        scale: 16, // 地图缩放级别,整型值,范围从1~28。默认为最大
+        infoUrl: '', // 在查看位置界面底部显示的超链接,可点击跳转
+        success(openRes) {
+          console.log('打开地图成功')
+          console.log(openRes)
+        },
+        fail(err) {
+          console.log('打开地图失败')
+          console.log(err)
+        },
+      })
+    }
+  },
 }
 </script>
 

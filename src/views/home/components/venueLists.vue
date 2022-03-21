@@ -110,7 +110,7 @@ export default {
           let longitude = res.longitude // 经度，浮点数，范围为180 ~ -180。
           let speed = res.speed // 速度，以米/每秒计
           let accuracy = res.accuracy // 位置精度
-          // console.log(latitude, longitude, speed, accuracy)
+          console.log(res)
           useMapStore().setCurrentLocation({
             latitude,
             longitude,

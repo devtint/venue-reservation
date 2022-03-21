@@ -7,7 +7,7 @@
             width="5rem"
             height="5rem"
             fit="contain"
-            src="https://img.yzcdn.cn/vant/cat.jpeg"
+            :src="currentSportHall.siteFile"
           />
         </div>
       </template>
