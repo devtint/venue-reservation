@@ -2,28 +2,22 @@
 
 import { defineStore } from 'pinia'
 
-export const useHomeStore = defineStore({
-  id: 'home', // id必填，且需要唯一
+export const useAreaStore = defineStore({
+  id: 'area', // id必填，且需要唯一
   state: () => {
     return {
-      sportsHalls: [], // 运动场馆列表
-      currentSportHall: {}, // 当前运动场馆
+      // 当前选择的场地
+      currentArea: {},
     }
   },
   getters: {
-    getSportsHalls: state => {
-      return state.sportsHalls
-    },
-    getCurrentSportHall: state => {
-      return state.currentSportHall
+    getCurrentArea: state => {
+      return state.currentArea
     },
   },
   actions: {
-    setSportsHalls(payload) {
-      this.sportsHalls = payload
-    },
-    setCurrentSportHall(payload) {
-      this.currentSportHall = payload
+    setCurrentArea(payload) {
+      this.currentArea = payload
     },
     // // 异步actions
     // async login(account, pwd) {

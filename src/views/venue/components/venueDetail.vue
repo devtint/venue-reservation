@@ -4,7 +4,7 @@
     <div class="card">
       <div class="header">
         <div class="title">
-          <div>德保体育中心</div>
+          <div>{{ currentSportHall.venueName }}</div>
         </div>
         <div class="location">
           <span><van-icon name="guide-o" /></span>
@@ -17,15 +17,19 @@
       场馆地址：德保县城关镇南隆大街84号
       开放时间：每日7：00-22：30，特殊情况除外
       预约规则：预约到场时间6个小时前可免费取消订单；之后不可取消订单，请按时处理。 -->
-        <p><van-icon name="phone-o" />联系电话：<span>0776-382098</span></p>
         <p>
-          <van-icon name="location-o" />场馆地址：<span
-            >德保县城关镇南隆大街84号</span
-          >
+          <van-icon name="phone-o" />联系电话：<span>{{
+            currentSportHall.phone
+          }}</span>
+        </p>
+        <p>
+          <van-icon name="location-o" />场馆地址：<span>{{
+            currentSportHall.address
+          }}</span>
         </p>
         <p>
           <van-icon name="clock-o" />开放时间：<span
-            >每日7：00-22：30，特殊情况除外</span
+            >每日{{ currentSportHall.openTime }}，特殊情况除外</span
           >
         </p>
         <p>
@@ -39,6 +43,7 @@
 </template>
 
 <script>
+import { useHomeStore } from '@/store/home'
 export default {
   name: '',
   components: {},
@@ -46,7 +51,11 @@ export default {
   data() {
     return {}
   },
-  computed: {},
+  computed: {
+    currentSportHall() {
+      return useHomeStore().getCurrentSportHall
+    },
+  },
   watch: {},
   created() {},
   mounted() {},

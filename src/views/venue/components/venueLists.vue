@@ -13,7 +13,7 @@
           @load="onLoad"
         >
           <van-cell-group inset>
-            <van-cell center>
+            <van-cell center v-for="(item, index) in list" :key="index">
               <van-card centered>
                 <template #thumb>
                   <div class="thumb">
@@ -21,17 +21,19 @@
                       width="5rem"
                       height="5rem"
                       fit="contain"
-                      src="https://img.yzcdn.cn/vant/cat.jpeg"
+                      :src="item.siteFile"
                     />
                   </div>
                 </template>
                 <template #title>
-                  <div class="itemTitle van-multi-ellipsis">1号篮球场</div>
+                  <div class="itemTitle van-ellipsis">
+                    {{ item.siteType + ' ' + item.siteNumber }}
+                  </div>
                 </template>
 
                 <template #desc>
                   <div class="van-ellipsis--l2">
-                    室内球场：篮球比赛、练习、大众健身
+                    {{ item.siteRemark }}
                   </div>
                 </template>
               </van-card>
@@ -41,7 +43,7 @@
                     type="primary"
                     size="small"
                     block
-                    @click="changeTime"
+                    @click="changeTime(item)"
                   >
                     预约
                   </van-button>
@@ -56,6 +58,10 @@
 </template>
 
 <script>
+import { getSportsHallFields } from '@/api/area'
+import { useHomeStore } from '@/store/home'
+import { useAreaStore } from '@/store/area'
+import { BASE_DOMAIN } from '@/global/config'
 export default {
   name: '',
   components: {},
@@ -63,6 +69,7 @@ export default {
   data() {
     return {
       list: [],
+      newList: [],
       loading: false,
       finished: false,
       refreshing: false,
@@ -80,14 +87,15 @@ export default {
           this.refreshing = false
         }
 
-        for (let i = 0; i < 10; i++) {
-          this.list.push(this.list.length + 1)
-        }
-        this.loading = false
+        this.loadSportsHallFields()
+        // for (let i = 0; i < 10; i++) {
+        //   this.list.push(this.list.length + 1)
+        // }
+        // this.loading = false
 
-        if (this.list.length >= 40) {
-          this.finished = true
-        }
+        // if (this.list.length >= 40) {
+        //   this.finished = true
+        // }
       }, 1000)
     },
     onRefresh() {
@@ -99,7 +107,41 @@ export default {
       this.loading = true
       this.onLoad()
     },
-    changeTime() {
+    loadSportsHallFields() {
+      getSportsHallFields({
+        venueName: useHomeStore().getCurrentSportHall.venueName,
+      }).then(res => {
+        if (res.data.rs !== '1') {
+          console.log(res.data.rs)
+        } else {
+          console.log('querySportsHallFields', res.data.querySportsHallFields)
+          let hallList = res.data.querySportsHallFields
+          this.newList = hallList.map(item => {
+            if (item.siteFile) {
+              item.siteFile = `${BASE_DOMAIN}/socketServer/images/cardMall/imgsrc/${item.siteFile}`
+            }
+            return item
+          })
+          // this.newList = this.newList.concat(hallList)
+
+          // useHomeStore().setSportsHalls(this.newList)
+          // this.list = this.sportsHalls
+          this.list = this.newList
+
+          console.log('list', this.list)
+          if (
+            this.list.length >=
+            parseInt(res.data.querySportsHallFields_totalRecNum)
+          ) {
+            this.finished = true
+          }
+
+          this.loading = false
+        }
+      })
+    },
+    changeTime(item) {
+      useAreaStore().setCurrentArea(item)
       this.$router.push('/select')
     },
   },

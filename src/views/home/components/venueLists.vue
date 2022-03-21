@@ -53,7 +53,7 @@
                     type="primary"
                     size="small"
                     block
-                    @click="changeVenue"
+                    @click="changeVenue(item)"
                   >
                     预约
                   </van-button>
@@ -179,7 +179,8 @@ export default {
       this.loading = true
       this.onLoad()
     },
-    changeVenue() {
+    changeVenue(item) {
+      useHomeStore().setCurrentSportHall(item)
       this.$router.push('/venue')
     },
     loadSportsHalls() {
