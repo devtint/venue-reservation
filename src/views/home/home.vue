@@ -5,7 +5,7 @@
         <template #right>
           <!-- 定位 -->
           <div class="home-header-location">
-            当前位置： <a class="city">广州市</a>
+            当前位置： <a class="city">{{ currentCity }}</a>
           </div>
         </template>
       </van-nav-bar>
@@ -40,7 +40,7 @@ import { getNotice } from '@/api/home'
 import { silenceLogin } from '@/api/user'
 
 import { useMapStore } from '@/store/map'
-
+import wx from 'weixin-js-sdk'
 // import { BASE_DOMAIN } from '@/global/config'
 /* 引入config文件模块 */
 import global_ from '@/global/config_global'
@@ -53,14 +53,50 @@ export default {
       // 登录后才进行渲染组件
       isLogin: false,
       noticeBarText: '',
+      currentCity: '', // 当前城市
     }
   },
-  computed: {},
+  computed: {
+    // currentCity() {
+    //   return useMapStore().getCurrentCity
+    // },
+  },
   watch: {},
   created() {
     this.loadSilenceLogin()
   },
-  mounted() {},
+  mounted() {
+    this.$nextTick(function () {
+      // 代码保证 this.$el 在 document 中
+      wx.ready(() => {
+        console.log('wx.ready 开始')
+        // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+        wx.getLocation({
+          type: 'gcj02', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+          success: res => {
+            let latitude = res.latitude // 纬度，浮点数，范围为90 ~ -90
+            let longitude = res.longitude // 经度，浮点数，范围为180 ~ -180。
+            let speed = res.speed // 速度，以米/每秒计
+            let accuracy = res.accuracy // 位置精度
+            // 通过获取的经纬度获取地址-城市(city) 使用腾讯地图API
+            // 根据经纬度解析地址
+            let map = new TMap.service.Geocoder()
+            let data = map.getAddress({
+              // location	TMap.LatLng	是	经纬度（GCJ02坐标系）
+              location: new TMap.LatLng(latitude, longitude),
+            })
+            data.then(res => {
+              console.log(res)
+              console.log('当前城市', res.result.address_component.city)
+              // useMapStore().setCurrentCity(res.result.address_component.city)
+              this.currentCity = res.result.address_component.city
+              console.log('当前城市this.currentCity', this.currentCity)
+            })
+          },
+        })
+      })
+    })
+  },
   methods: {
     loadSilenceLogin() {
       console.log('login:::')
@@ -150,6 +186,7 @@ export default {
           this.schoolName = storage.getItem('TELLERCOMPANY')
 
           this.wxConfig()
+
           this.loadNotice()
         }
       })

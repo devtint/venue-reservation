@@ -5,7 +5,6 @@ import store from './store'
 import axios from 'axios'
 import JSEncrypt from 'jsencrypt'
 import wx from 'weixin-js-sdk'
-
 // 全局引入
 import { globalRegister } from './global'
 

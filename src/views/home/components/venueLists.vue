@@ -47,7 +47,7 @@
                   <!-- 场地距离 -->
                   <div>
                     <span><van-icon name="location-o" /></span>
-                    <span v-if="isDistance" :onload="mapDistance(item.city, item.address)"
+                    <span :onload="mapDistance(item.city, item.address)"
                       >{{ distance }}km</span
                     >
                   </div>
@@ -89,7 +89,7 @@ export default {
       refreshing: false,
       distance: 0,
 
-      isDistance: false,
+      // isDistance: false,
     }
   },
   computed: {
@@ -104,27 +104,33 @@ export default {
     },
   },
   created() {
-    wx.getLocation({
-        type: 'gcj02', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
-        success: res => {
-          let latitude = res.latitude // 纬度，浮点数，范围为90 ~ -90
-          let longitude = res.longitude // 经度，浮点数，范围为180 ~ -180。
-          let speed = res.speed // 速度，以米/每秒计
-          let accuracy = res.accuracy // 位置精度
-          console.log('wx.getLocation', res)
-          useMapStore().setCurrentLocation({
-            latitude,
-            longitude,
-          })
-          this.isDistance = true
-        },
-      })
+    // this.initLocation()
   },
   mounted() {},
   methods: {
+    initLocation() {
+      // 微信获取当前位置
+      console.log('initLocation:::')
+    },
+    // 计算到每个场馆的距离
     mapDistance(region, address) {
-      
-          this.getLocation(region, address)
+      wx.ready(() => {
+        wx.getLocation({
+          type: 'gcj02', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+          success: res => {
+            let latitude = res.latitude // 纬度，浮点数，范围为90 ~ -90
+            let longitude = res.longitude // 经度，浮点数，范围为180 ~ -180。
+            let speed = res.speed // 速度，以米/每秒计
+            let accuracy = res.accuracy // 位置精度
+            console.log('wx.getLocation', res)
+            useMapStore().setCurrentLocation({
+              latitude,
+              longitude,
+            })
+            this.getLocation(region, address)
+          },
+        })
+      })
     },
     // 根据地址获取经纬度
     getLocation(region, address) {
@@ -223,5 +229,8 @@ h3 {
 }
 .thumb {
   margin-left: -1rem;
+}
+/deep/ .van-button {
+  width: 4rem;
 }
 </style>

@@ -11,6 +11,7 @@ export const useMapStore = defineStore({
         longitude: '',
       }, // 当前位置经纬度
       mapLocation: {},
+      // currentCity: '',
     }
   },
   getters: {
@@ -20,6 +21,9 @@ export const useMapStore = defineStore({
     getMapLocation: state => {
       return state.mapLocation
     },
+    // getCurrentCity: state => {
+    //   return state.currentCity
+    // },
   },
   actions: {
     setCurrentLocation(payload) {
@@ -28,6 +32,9 @@ export const useMapStore = defineStore({
     setMapLocation(payload) {
       this.mapLocation = payload
     },
+    // setCurrentCity(payload) {
+    //   this.currentCity = payload
+    // },
     // // 异步actions
     // async login(account, pwd) {
     //   const { data } = await api.login(account, pwd)
