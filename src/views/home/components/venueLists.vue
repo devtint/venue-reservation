@@ -45,9 +45,11 @@
               <template #right-icon>
                 <div>
                   <!-- 场地距离 -->
-                  <div :onload="mapDistance(item.city, item.address)">
+                  <div>
                     <span><van-icon name="location-o" /></span>
-                    <span>{{ distance }}km</span>
+                    <span v-if="isDistance" :onload="mapDistance(item.city, item.address)"
+                      >{{ distance }}km</span
+                    >
                   </div>
                   <van-button
                     type="primary"
@@ -86,6 +88,8 @@ export default {
       finished: false,
       refreshing: false,
       distance: 0,
+
+      isDistance: false,
     }
   },
   computed: {
@@ -99,25 +103,28 @@ export default {
       this.list = newValue
     },
   },
-  created() {},
-  mounted() {},
-  methods: {
-    mapDistance(region, address) {
-      wx.getLocation({
+  created() {
+    wx.getLocation({
         type: 'gcj02', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
         success: res => {
           let latitude = res.latitude // 纬度，浮点数，范围为90 ~ -90
           let longitude = res.longitude // 经度，浮点数，范围为180 ~ -180。
           let speed = res.speed // 速度，以米/每秒计
           let accuracy = res.accuracy // 位置精度
-          console.log(res)
+          console.log('wx.getLocation', res)
           useMapStore().setCurrentLocation({
             latitude,
             longitude,
           })
-          this.getLocation(region, address)
+          this.isDistance = true
         },
       })
+  },
+  mounted() {},
+  methods: {
+    mapDistance(region, address) {
+      
+          this.getLocation(region, address)
     },
     // 根据地址获取经纬度
     getLocation(region, address) {
