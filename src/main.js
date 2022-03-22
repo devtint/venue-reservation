@@ -11,7 +11,7 @@ import { globalRegister } from './global'
 /* 引入config文件模块 */
 import global_ from '@/global/config_global'
 // import { BASE_URL } from '@/global/config'
-import { silenceLogin, checkLogin } from '@/api/user'
+import { silenceLogin, checkLogin, getJSSDKSignature } from '@/api/user'
 import { Dialog } from 'vant'
 
 // 使用vConsole插件进行移动端调试 --开发环境
@@ -167,19 +167,17 @@ Vue.prototype.regSchool = function (schoolName) {
 }
 //wxConfig的
 Vue.prototype.wxConfig = function () {
-  var url = encodeURIComponent(location.href.split('#')[0])
-  var that = this
-  this.$http
-    .get(
-      'http://www.paytunnel.cn/venueReservationServerRH/getJSSDKSignature?url=' +
-        url
-    )
-    .then(function (res) {
-      var appId = res.data.appId
-      var timestamp = res.data.timestamp
-      var nonceStr = res.data.nonceStr
-      var signature = res.data.signature
-      that.appId = appId
+  // var url = encodeURIComponent(location.href.split('#')[0])
+  var url = location.href.split('#')[0]
+  getJSSDKSignature({
+    url: url,
+  })
+    .then(res => {
+      let appId = res.data.appId
+      let timestamp = res.data.timestamp
+      let nonceStr = res.data.nonceStr
+      let signature = res.data.signature
+      console.log('getJSSDKSignature res:', res)
       wx.config({
         debug: false,
         appId: appId,

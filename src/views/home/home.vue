@@ -76,8 +76,8 @@ export default {
           success: res => {
             let latitude = res.latitude // 纬度，浮点数，范围为90 ~ -90
             let longitude = res.longitude // 经度，浮点数，范围为180 ~ -180。
-            let speed = res.speed // 速度，以米/每秒计
-            let accuracy = res.accuracy // 位置精度
+            // let speed = res.speed // 速度，以米/每秒计
+            // let accuracy = res.accuracy // 位置精度
             // 通过获取的经纬度获取地址-城市(city) 使用腾讯地图API
             // 根据经纬度解析地址
             let map = new TMap.service.Geocoder()

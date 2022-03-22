@@ -23,13 +23,22 @@ export const checkLogin = () => {
   })
 }
 // 登录
-export const loginOfAccount = params => {
+export const loginOfAccount = data => {
   return request({
     method: 'POST',
     url: '/app/apploginByAccount',
-    data: params,
+    data,
   })
 }
+// wx通过config接口注入权限验证配置
+export const getJSSDKSignature = params => {
+  return request({
+    method: 'GET',
+    url: '/getJSSDKSignature',
+    params,
+  })
+}
+
 // 退出登录
 // export const setLogout = () => {
 //   return request({
