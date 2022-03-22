@@ -145,6 +145,8 @@ export default {
           storage.setItem('guestMemberID', global_.userName)
           storage.setItem('appid', appid)
           storage.setItem('TELLERCOMPANY', res.data.TELLERCOMPANY)
+          storage.setItem('userName', res.data.nickname)
+          storage.setItem('userIcon', res.data.usrIcon)
           this.schoolName = storage.getItem('TELLERCOMPANY')
 
           this.wxConfig()

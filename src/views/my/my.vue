@@ -10,7 +10,7 @@
         width="5rem"
         height="5rem"
         fit="cover"
-        src="https://img01.yzcdn.cn/vant/cat.jpeg"
+        :src="userInfo.icon"
       />
       <div class="userInfo-info">
         <div class="userInfo-info-name">
@@ -51,11 +51,11 @@
 
     <!-- 退出登录 -->
     <!-- <van-popup v-model="showLogout"> -->
-    <div class="logout">
+    <!-- <div class="logout">
       <van-button block color="#fec760" style="width: 100%" @click="logout">
         {{ isLogin ? '退出登录' : '登录' }}
       </van-button>
-    </div>
+    </div> -->
 
     <!-- </van-popup> -->
   </div>
@@ -72,6 +72,7 @@ export default {
       userInfo: {
         nickName: '',
         id: '',
+        icon: '',
       },
       isLogin: false,
     }
@@ -98,6 +99,8 @@ export default {
         this.userInfo.nickName = window.localStorage.getItem('nickName')
       } else {
         this.userInfo.id = guest
+        this.userInfo.nickName = window.localStorage.getItem('userName')
+        this.userInfo.icon = window.localStorage.getItem('userIcon')
         this.isLogin = false
       }
     },
