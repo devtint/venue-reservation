@@ -43,7 +43,7 @@
                     type="primary"
                     size="small"
                     block
-                    @click="changeTime(item)"
+                    @click="selectTime(item)"
                   >
                     预约
                   </van-button>
@@ -140,7 +140,7 @@ export default {
         }
       })
     },
-    changeTime(item) {
+    selectTime(item) {
       useAreaStore().setCurrentArea(item)
       this.$router.push('/select')
     },

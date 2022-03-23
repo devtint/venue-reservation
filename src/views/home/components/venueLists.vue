@@ -13,7 +13,7 @@
         >
           <van-cell-group inset>
             <van-cell center v-for="(item, index) in list" :key="index">
-              <van-card centered>
+              <van-card centered @click="selectVenue(item)">
                 <template #title>
                   <div>
                     <div class="itemTitle van-ellipsis">
@@ -25,6 +25,7 @@
                   <div class="itemDesc van-ellipsis">
                     场地类型：{{ item.siteTypes }}
                   </div>
+                  <div class="van-ellipsis">{{ item.address }}</div>
                 </template>
                 <template #thumb>
                   <div class="thumb">
@@ -37,30 +38,30 @@
                   </div>
                 </template>
 
-                <template #tags>
-                  <div class="van-ellipsis">{{ item.address }}</div>
+                <template #price>
+                  
                   <div>电话:{{ item.phone }}</div>
                 </template>
-              </van-card>
-              <template #right-icon>
-                <div>
+                <template #num>
                   <!-- 场地距离 -->
                   <div>
-                    <span><van-icon name="location-o" /></span>
-                    <span :onload="mapDistance(item.city, item.address)"
-                      >{{ distance }}km</span
-                    >
+                    <span><van-icon color="#fec864" name="location-o" /></span>
+                    <span
+                      :onload="mapDistance(item.city, item.address)"
+                      style="color: #fec864"
+                    >{{ distance }}</span >
+                    <span style="color: #ccc">km</span>
                   </div>
-                  <van-button
+                  <!-- <van-button
                     type="primary"
                     size="small"
                     block
-                    @click="changeVenue(item)"
+                    @click="selectVenue(item)"
                   >
                     预约
-                  </van-button>
-                </div>
-              </template>
+                  </van-button> -->
+                </template>
+              </van-card>
             </van-cell>
           </van-cell-group>
         </van-list>
@@ -192,7 +193,7 @@ export default {
       this.loading = true
       this.onLoad()
     },
-    changeVenue(item) {
+    selectVenue(item) {
       useHomeStore().setCurrentSportHall(item)
       this.$router.push('/venue')
     },

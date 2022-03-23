@@ -16,12 +16,14 @@
     <div class="orderInfo">
       <van-cell-group inset>
         <van-cell center>
-          <van-card centered thumb="https://img.yzcdn.cn/vant/cat.jpeg">
+          <van-card centered :thumb="currentArea.siteFile">
             <template #title>
-              <div class="carName">德保体育中心</div>
+              <div class="carName">{{ currentSportHall.venueName }}</div>
             </template>
             <template #desc>
-              <div class="carDesc">1号羽毛球场</div>
+              <div class="carDesc">
+                {{ currentArea.siteType + ' ' + currentArea.siteNumber }}
+              </div>
             </template>
           </van-card>
         </van-cell>
@@ -32,7 +34,7 @@
             </div>
           </template>
         </van-cell>
-        <van-cell>
+        <!-- <van-cell>
           <template #title>
             <div>
               <span>预约场地：</span>
@@ -44,7 +46,7 @@
               <div>1号羽毛球场</div>
             </div>
           </template>
-        </van-cell>
+        </van-cell> -->
         <van-cell>
           <template #title>
             <div>
@@ -53,8 +55,8 @@
           </template>
           <template>
             <div>
-              <div>2022年01月02日 周六</div>
-              <div>10:00-11:00</div>
+              <div>{{ subscribeDateShow + ' ' + '周' + subscribeWeek }}</div>
+              <div>{{ subscribeTimeSlot }}</div>
             </div>
           </template>
         </van-cell>
@@ -70,7 +72,7 @@
       </van-cell-group>
     </div>
 
-    <div class="lesseeInfo">
+    <!-- <div class="lesseeInfo">
       <van-cell-group inset>
         <van-cell title-class="lesseeTitle">
           <template #title>
@@ -103,35 +105,8 @@
             </div>
           </template>
         </van-cell>
-        <!-- <contact-card></contact-card> -->
       </van-cell-group>
-    </div>
-    <div class="costDescription">
-      <van-cell-group inset>
-        <van-cell title-class="payTitle">
-          <template #title>
-            <div>
-              <span><i class="verticalLine"></i> 预定须知</span>
-            </div>
-          </template>
-        </van-cell>
-        <van-cell>
-          <template #title>
-            <div>
-              <div>
-                <i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</i>
-                1.预约后请及时到场，如因特殊情况不能及时到场，请及时取消订单；
-              </div>
-              <div>
-                <i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</i>
-                2.在预约时间到达前6个小时可免费取消订单，超过则不可取消，谢谢理解！
-              </div>
-            </div>
-          </template>
-        </van-cell>
-      </van-cell-group>
-    </div>
-
+    </div> -->
     <div class="payMethod">
       <van-cell-group inset>
         <van-cell title-class="payTitle">
@@ -154,6 +129,31 @@
           <template #extra>
             <div>
               <van-checkbox v-model="payChecked"></van-checkbox>
+            </div>
+          </template>
+        </van-cell>
+      </van-cell-group>
+    </div>
+    <div class="costDescription">
+      <van-cell-group inset>
+        <van-cell title-class="payTitle">
+          <template #title>
+            <div>
+              <span><i class="verticalLine"></i> 预定须知</span>
+            </div>
+          </template>
+        </van-cell>
+        <van-cell>
+          <template #title>
+            <div>
+              <div>
+                <i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</i>
+                1.预约后请及时到场，如因特殊情况不能及时到场，请及时取消订单；
+              </div>
+              <div>
+                <i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</i>
+                2.在预约时间到达前6个小时可免费取消订单，超过则不可取消，谢谢理解！
+              </div>
             </div>
           </template>
         </van-cell>
@@ -222,6 +222,12 @@
 // import { getPriceInfo, setCreatOrder } from '@/api/order'
 import { BASE_COMNAME } from '@/global/config'
 
+import wx from 'weixin-js-sdk'
+
+import { useAreaStore } from '@/store/area'
+import { useHomeStore } from '@/store/home'
+import { useOrderStore } from '@/store/order'
+
 export default {
   name: 'confirmOrder',
   components: {
@@ -257,6 +263,25 @@ export default {
     }
   },
   computed: {
+    currentSportHall() {
+      return useHomeStore().getCurrentSportHall
+    },
+    currentArea() {
+      return useAreaStore().getCurrentArea
+    },
+    subscribeDate() {
+      return useOrderStore().getSubscribeDate
+    },
+    subscribeDateShow() {
+      return useOrderStore().getSubscribeDateShow
+    },
+    subscribeWeek() {
+      return useOrderStore().getSubscribeWeek
+    },
+    subscribeTimeSlot() {
+      return useOrderStore().getSubscribeTimeSlot
+    },
+
     // tabName() {
     //   return this.$store.getters['getTabName']
     // },
@@ -341,6 +366,7 @@ export default {
     },
   },
   created() {
+    // 获取当前场地以及预约时间
     // 通过接口获取司机以及服务费
     // this.loadPriceInfo()
     // this.loadPriceInfo('0')

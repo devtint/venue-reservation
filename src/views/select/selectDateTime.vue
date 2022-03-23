@@ -73,6 +73,7 @@ export default {
       } = useOrderStore()
 
       console.log(selectDate, selectWeek, selectTimeSlot)
+      this.$router.push('/confirm')
     },
   },
 }

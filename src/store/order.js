@@ -8,6 +8,8 @@ export const useOrderStore = defineStore({
     return {
       // 预约日期
       subscribeDate: '20220314',
+      // 预约日期用于展示
+      subscribeDateShow: '2020年03月14日',
       // 预约星期
       subscribeWeek: '',
       // 预约时间段
@@ -18,6 +20,10 @@ export const useOrderStore = defineStore({
     // 获取预约日期
     getSubscribeDate: state => {
       return state.subscribeDate
+    },
+    // 获取预约日期用于展示
+    getSubscribeDateShow: state => {
+      return state.subscribeDateShow
     },
     // 获取预约星期
     getSubscribeWeek: state => {
@@ -32,6 +38,10 @@ export const useOrderStore = defineStore({
     // 更新预约日期
     updateSubscribeDate(date) {
       this.subscribeDate = date
+    },
+    // 更新预约日期用于展示
+    updateSubscribeDateShow(date) {
+      this.subscribeDateShow = date
     },
     // 更新预约星期
     updateSubscribeWeek(week) {

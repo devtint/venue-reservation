@@ -43,14 +43,20 @@ export default {
       let date = new Date()
       // date.setDate(date.getDate() + 1)
       const weekMap = ['日', '一', '二', '三', '四', '五', '六']
-      const week = weekMap[date.getDay()]
+      const week = weekMap[date.getDay() + 1]
       // 存储日期 pinia
       // 格式化日期20220910
       const year = date.getFullYear()
       const month = date.getMonth() + 1
       const day = date.getDate() + 1 // 默认明天
-      const dateStr = `${year}${month}${day}`
-      useOrderStore().updateSubscribeDate(dateStr)
+      // 存储日期20220203 pinia
+      let newDate = `${year}${month}${day}`
+      useOrderStore().updateSubscribeDate(newDate)
+      // 存储日期用于展示 2022年02月03日 pinia
+      let newDateStr = `${year}年${month}月${day}日`
+      useOrderStore().updateSubscribeDateShow(newDateStr)
+      // 存储星期
+      useOrderStore().updateSubscribeWeek(week)
       return `${year}年${month}月${day}日 星期${week}`
     },
     formatDate(date) {
@@ -62,9 +68,12 @@ export default {
       const weekMap = ['日', '一', '二', '三', '四', '五', '六']
       const week = weekMap[date.getDay()]
 
-      // 存储日期 pinia
+      // 存储日期20220203 pinia
       let newDate = `${year}${month}${day}`
       useOrderStore().updateSubscribeDate(newDate)
+      // 存储日期用于展示 2022年02月03日 pinia
+      let newDateStr = `${year}年${month}月${day}日`
+      useOrderStore().updateSubscribeDateShow(newDateStr)
       // 存储星期
       useOrderStore().updateSubscribeWeek(week)
 
