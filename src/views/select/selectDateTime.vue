@@ -73,7 +73,11 @@ export default {
       } = useOrderStore()
 
       console.log(selectDate, selectWeek, selectTimeSlot)
-      this.$router.push('/confirm')
+      if (selectTimeSlot) {
+        this.$router.push('/confirm')
+      }else{
+        this.$toast.fail('请选择预约时间')
+      }
     },
   },
 }

@@ -32,13 +32,13 @@
           is-link
           to="orders"
         />
-        <van-cell title="我的违章" size="large" icon="underway" is-link />
+        <!-- <van-cell title="我的违章" size="large" icon="underway" is-link />
         <van-cell
           title="密码管理"
           size="large"
           icon="umbrella-circle"
           is-link
-        />
+        /> -->
         <van-cell
           title="常见问题"
           size="large"
@@ -91,18 +91,18 @@ export default {
   },
   methods: {
     init() {
-      let user = window.localStorage.getItem('memberID')
+      // let user = window.localStorage.getItem('memberID')
       let guest = window.localStorage.getItem('guestMemberID')
-      if (user) {
-        this.userInfo.id = user
-        this.isLogin = true
-        this.userInfo.nickName = window.localStorage.getItem('nickName')
-      } else {
-        this.userInfo.id = guest
-        this.userInfo.nickName = window.localStorage.getItem('userName')
-        this.userInfo.icon = window.localStorage.getItem('userIcon')
-        this.isLogin = false
-      }
+      // if (user) {
+      //   this.userInfo.id = user
+      //   this.isLogin = true
+      //   this.userInfo.nickName = window.localStorage.getItem('nickName')
+      // } else {
+      this.userInfo.id = guest
+      this.userInfo.nickName = window.localStorage.getItem('userName')
+      this.userInfo.icon = window.localStorage.getItem('userIcon')
+      this.isLogin = false
+      // }
     },
     logout() {
       if (this.isLogin === true) {

@@ -18,7 +18,7 @@ import { searchSportsHalls } from '@/api/home'
 
 import { useHomeStore } from '@/store/home'
 export default {
-  name: '',
+  name: 'searchVenue',
   components: {},
   props: {},
   data() {

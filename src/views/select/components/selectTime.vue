@@ -60,6 +60,8 @@ export default {
   },
   created() {
     this.loadSportSiteResInfo()
+    // 清空已选择的时间段
+    useOrderStore().updateSubscribeTimeSlot('')
   },
   mounted() {},
   methods: {

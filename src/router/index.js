@@ -34,6 +34,10 @@ const routes = [
         // which is lazy-loaded when the route is visited.
         component: () =>
           import(/* webpackChunkName: "home" */ '@/views/home/home.vue'),
+        meta: {
+          keepAlive: true, // 此组件需要被缓存
+          // deepth: 1,
+        },
       },
       {
         path: '/orders',
@@ -79,6 +83,13 @@ const routes = [
 
 const router = new VueRouter({
   routes,
+  scrollBehavior: (to, from, position) => {
+    if (position) {
+      return position
+    } else {
+      return { x: 0, y: 0 }
+    }
+  },
 })
 
 // // 路由导航守卫:也就是所有页面的导航都会经过这里

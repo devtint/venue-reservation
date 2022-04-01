@@ -78,7 +78,7 @@ import { useMapStore } from '@/store/map'
 
 // import { TMap } from '@/api/map'
 export default {
-  name: '',
+  name: 'venueLists',
   components: {},
   props: {},
   data() {
