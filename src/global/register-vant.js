@@ -52,6 +52,7 @@ import {
   Dialog,
   Search,
   ActionSheet,
+  CountDown,
 } from 'vant'
 
 const components = [
@@ -107,6 +108,7 @@ const components = [
   Dialog,
   Search,
   ActionSheet,
+  CountDown,
 ]
 
 function install(Vue) {

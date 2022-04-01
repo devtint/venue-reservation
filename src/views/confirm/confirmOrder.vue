@@ -34,19 +34,6 @@
             </div>
           </template>
         </van-cell>
-        <!-- <van-cell>
-          <template #title>
-            <div>
-              <span>预约场地：</span>
-            </div>
-          </template>
-          <template>
-            <div>
-              <div>德保体育中心</div>
-              <div>1号羽毛球场</div>
-            </div>
-          </template>
-        </van-cell> -->
         <van-cell>
           <template #title>
             <div>
@@ -181,36 +168,7 @@
     </div>
 
     <div class="orderSuccess">
-      <van-popup v-model="orderSuccessShow" style="width: 100%; height: 100%">
-        <div class="orderSuccessContainer">
-          <van-nav-bar
-            fixed
-            placeholder
-            right-text="完成"
-            @click-right="toOrders"
-          />
-          <van-icon name="checked" color="#fec760" size="50" />
-          <p>下单成功</p>
-          <p style="font-size: small; color: #bcbcbc">
-            请保持手机畅通，如行程有变，请在规定时间取消订单
-          </p>
-          <template class="btnBox">
-            <van-button
-              block
-              color="#fec760"
-              style="width: 90%; margin-top: 3rem"
-              to="orders"
-              >查看订单</van-button
-            >
-          </template>
-          <!-- <template v-else>
-            <div class="btnBox1">
-              <van-button block type="default" to="orders">查看订单</van-button>
-              <van-button block color="#fec760">去支付</van-button>
-            </div>
-          </template> -->
-        </div>
-      </van-popup>
+      <we-chat-pay :show="orderSuccessShow"></we-chat-pay>
     </div>
   </div>
 </template>
@@ -228,10 +186,13 @@ import { useAreaStore } from '@/store/area'
 import { useHomeStore } from '@/store/home'
 import { useOrderStore } from '@/store/order'
 
+import weChatPay from '../pay/weChatPay.vue'
+
 export default {
   name: 'confirmOrder',
   components: {
     // ContactCard,
+    weChatPay
   },
   props: {},
   data() {
@@ -431,42 +392,40 @@ export default {
       })
     },
     orderSubmit() {
+      this.orderSuccessShow = true
       // this.$router.push('/pay')
-      console.log(
-        'currentContactInfo',
-        Object.keys(this.currentContactInfo).length
-      )
-      if (Object.keys(this.currentContactInfo).length === 0) {
-        this.$toast.fail('请选择承租人!')
-        return false
-      }
-      let params = {
-        actNo: this.actNo,
-        priceAttrValueList: this.carModel,
-        saleCmpName: BASE_COMNAME,
-        startDate: this.formatStartDate,
-        startTime: this.formatStartTime,
-        finishDate: this.formatEndDate,
-        finishTime: this.formatEndTime,
-        buyDriverService: this.isDrier,
-        buyDeliveryService: this.isPickupCar,
-        buyReturnService: this.isReturnCar,
-        receiver: this.currentContactInfo.name,
-        phone: this.currentContactInfo.tel,
-        address: this.currentContactInfo.addressDetail,
-      }
-      setCreatOrder(params).then(res => {
-        console.log('rs', res.data.rs)
-        // console.log('res.data.orderData', res.data.orderData)
-        if (res.data.rs === '1') {
-          this.orderSuccessShow = true
-        } else {
-          this.$toast.fail(res.data.msg)
-        }
-      })
-    },
-    toOrders() {
-      this.$router.push('/orders')
+      // console.log(
+      //   'currentContactInfo',
+      //   Object.keys(this.currentContactInfo).length
+      // )
+      // if (Object.keys(this.currentContactInfo).length === 0) {
+      //   this.$toast.fail('请选择承租人!')
+      //   return false
+      // }
+      // let params = {
+      //   actNo: this.actNo,
+      //   priceAttrValueList: this.carModel,
+      //   saleCmpName: BASE_COMNAME,
+      //   startDate: this.formatStartDate,
+      //   startTime: this.formatStartTime,
+      //   finishDate: this.formatEndDate,
+      //   finishTime: this.formatEndTime,
+      //   buyDriverService: this.isDrier,
+      //   buyDeliveryService: this.isPickupCar,
+      //   buyReturnService: this.isReturnCar,
+      //   receiver: this.currentContactInfo.name,
+      //   phone: this.currentContactInfo.tel,
+      //   address: this.currentContactInfo.addressDetail,
+      // }
+      // setCreatOrder(params).then(res => {
+      //   console.log('rs', res.data.rs)
+      //   // console.log('res.data.orderData', res.data.orderData)
+      //   if (res.data.rs === '1') {
+      //     this.orderSuccessShow = true
+      //   } else {
+      //     this.$toast.fail(res.data.msg)
+      //   }
+      // })
     },
     changeDriverRadio(name) {
       // 是否佩带司机
@@ -613,26 +572,4 @@ export default {
   color: #565656;
 }
 
-.orderSuccessContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin-top: -10rem;
-  height: 100%;
-  padding: 0.5rem;
-  .btnBox1 {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-
-    .van-button {
-      width: 45%;
-      margin-top: 3rem;
-
-      margin-left: 0.5rem;
-    }
-  }
-}
 </style>

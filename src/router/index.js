@@ -79,6 +79,11 @@ const routes = [
     name: 'rules',
     component: () => import('@/views/confirm/page/orderRules.vue'),
   },
+  {
+    path: '/pay',
+    name: 'pay',
+    component: () => import('@/views/pay/weChatPay.vue'),
+  },
 ]
 
 const router = new VueRouter({
