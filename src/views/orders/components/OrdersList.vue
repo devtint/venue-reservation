@@ -23,7 +23,9 @@
               <div class="orderItem">
                 <div class="useStatus">
                   <span
-                    >体育中心<van-tag color="#f4f4f4" text-color="#adadad"
+                    >天河体育中心体育场<van-tag
+                      color="#f4f4f4"
+                      text-color="#adadad"
                       >1号羽毛球场</van-tag
                     ></span
                   >
@@ -36,7 +38,7 @@
                       item.tradeStatus !== '2' ? item.orderStatusShow : '已取消'
                     }}</span
                   > -->
-                  <span>已取消</span>
+                  <span>待付款</span>
                 </div>
                 <div class="orderInfo">
                   <!-- <p>订单编号 : {{ item.billNo }}</p> -->
@@ -44,8 +46,31 @@
                   <p>订单编号 : 163023495883</p>
                   <p>预约日期 : 2022-02-02 周二</p>
                   <p>预约时间 : 10:00-11:00</p>
-                  <p>联系人 : 王五</p>
-                  <p>联系电话 : 18611112233</p>
+                  <div class="orderBtn">
+                    <template>
+                      <van-button
+                        class="navigation"
+                        size="small"
+                        color="#409eff"
+                        @click="navigation(item)"
+                        >地图导航</van-button
+                      >
+                      <van-button
+                        class="weChatPay"
+                        size="small"
+                        color="#409eff"
+                        @click="weChatPay(item)"
+                        >去支付</van-button
+                      >
+                      <van-button
+                        class="cancelOrder"
+                        size="small"
+                        color="#a6a9ad"
+                        @click="cancelOrder(item)"
+                        >取消订单</van-button
+                      >
+                    </template>
+                  </div>
                   <!-- <div class="orderBtn" v-if="item.tradeStatus !== '2'">
                     <template
                       v-if="
@@ -99,6 +124,7 @@
 //   getOrderFeeDetailed,
 // } from '@/api/order'
 import { BASE_COMNAME } from '@/global/config'
+import wx from 'weixin-js-sdk'
 // import moment from 'moment'
 export default {
   name: 'OrdersList',
@@ -184,6 +210,50 @@ export default {
       // 将 loading 设置为 true，表示处于加载状态
       this.loading = true
       this.onLoad()
+    },
+    // 导航
+    navigation(item) {
+      this.$toast('正在跳转导航...')
+      // 根据地址获取经纬度
+      // let region = item.city
+      // let address = item.address
+      // let venueName = item.venueName
+      let region = '广州市'
+      let address = '天河路299号'
+      let venueName = '天河体育中心体育场'
+      let map = new TMap.service.Geocoder()
+      let data = map.getLocation({
+        address: `${region}${address}`,
+        // region: region,
+      })
+      data.then(res => {
+        console.log(res)
+        console.log(res.result.location)
+        let latitude = res.result.location.lat
+        let longitude = res.result.location.lng
+        console.log('当前位置经纬度', latitude, longitude)
+        // this.openMap(latitude,longitude,item.venueName,item.address)
+        this.openMap(latitude, longitude, venueName, address)
+      })
+    },
+    // 打开地图
+    openMap(lat, lng, title, address) {
+      wx.openLocation({
+        latitude: lat, // 纬度，浮点数，范围为90 ~ -90
+        longitude: lng, // 经度，浮点数，范围为180 ~ -180。
+        name: title, // 位置名
+        address: address, // 地址详情说明
+        scale: 16, // 地图缩放级别,整型值,范围从1~28。默认为最大
+        infoUrl: '', // 在查看位置界面底部显示的超链接,可点击跳转
+        success(res) {
+          console.log('打开地图成功')
+          console.log(res)
+        },
+        fail(err) {
+          console.log('打开地图失败')
+          console.log(err)
+        },
+      })
     },
     // 取消订单
     cancelOrder(item) {
