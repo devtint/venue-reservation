@@ -40,15 +40,17 @@ export default {
   mounted() {},
   methods: {
     getTomorrow() {
+      // 默认明天
       let date = new Date()
-      // date.setDate(date.getDate() + 1)
+      date.setDate(date.getDate() + 1)
+
       const weekMap = ['日', '一', '二', '三', '四', '五', '六']
-      const week = weekMap[date.getDay() + 1]
+      const week = weekMap[date.getDay()]
       // 存储日期 pinia
       // 格式化日期20220910
       const year = date.getFullYear()
       const month = date.getMonth() + 1
-      const day = date.getDate() + 1 // 默认明天
+      const day = date.getDate()
       // 存储日期20220203 pinia
       let newDate = `${year}${month}${day}`
       useOrderStore().updateSubscribeDate(newDate)
@@ -67,6 +69,7 @@ export default {
       const day = date.getDate()
       const weekMap = ['日', '一', '二', '三', '四', '五', '六']
       const week = weekMap[date.getDay()]
+      console.log(date.getDay())
 
       // 存储日期20220203 pinia
       let newDate = `${year}${month}${day}`

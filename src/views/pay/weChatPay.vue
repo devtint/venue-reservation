@@ -20,9 +20,9 @@
               <template #default="timeData">
                 <!-- <span class="block">{{ timeData.hours }}</span> -->
                 <!-- <span class="colon">:</span> -->
-                <span class="block">{{ timeData.minutes }}</span>
+                <span class="block">({{ timeData.minutes }}</span>
                 <span class="colon">:</span>
-                <span class="block">{{ timeData.seconds }}</span>
+                <span class="block">{{ timeData.seconds }})</span>
               </template>
             </van-count-down>
           </span>
@@ -73,7 +73,7 @@ export default {
       this.$router.push('/orders')
     },
     weChatPay() {
-      this.$router.push('/pay/weChatPay')
+      console.log('weChatPay')
     },
   },
 }
