@@ -22,7 +22,7 @@
             </template>
             <template #desc>
               <div class="carDesc">
-                {{ currentArea.siteType + ' ' + currentArea.siteNumber }}
+                {{ currentArea.siteType + ' ' + currentAreaSite }}
               </div>
             </template>
           </van-card>
@@ -52,7 +52,7 @@
             <div>
               <!-- <span>￥{{ driverFeeShow }} x {{ dayToDay }} </span
               >&nbsp;&nbsp;&nbsp;&nbsp; -->
-              <span class="totalPrice">￥30</span>
+              <span class="totalPrice">￥{{ totalFee }}</span>
             </div>
           </template>
         </van-cell>
@@ -155,15 +155,6 @@
         @submit="orderSubmit"
         label="预计："
       >
-        <!-- <template #tip>
-          你的收货地址不支持同城送,
-          <span @click="onClickEditAddress">修改地址</span>
-        </template> -->
-        <!-- <template #tip>
-          <van-checkbox v-model="consentRules"
-            >我已同意《租车服务合同》</van-checkbox
-          >
-        </template> -->
       </van-submit-bar>
     </div>
 
@@ -174,11 +165,7 @@
 </template>
 
 <script>
-// import ContactCard from '@/components/ContactCard.vue'
-// import { mapGetters } from 'vuex'
-
-// import { getPriceInfo, setCreatOrder } from '@/api/order'
-import { BASE_COMNAME } from '@/global/config'
+// import { BASE_COMNAME } from '@/global/config'
 
 import wx from 'weixin-js-sdk'
 
@@ -188,39 +175,22 @@ import { useOrderStore } from '@/store/order'
 
 import weChatPay from '../pay/weChatPay.vue'
 
+import {
+  getVenueReservationPrice,
+  createSiteReservationOrder,
+} from '@/api/order'
+
 export default {
   name: 'confirmOrder',
   components: {
-    // ContactCard,
-    weChatPay
+    weChatPay,
   },
   props: {},
   data() {
     return {
-      consentRules: false,
       payChecked: true,
       orderSuccessShow: false,
-      isDrier: '1', // 是否需要司机
-      isPickupCar: '1', // 是否自助取车
-      isReturnCar: '1', // 是否自助还车
-
-      // 原价
-      originalPrice: '',
-      // 实际价格
-      actualPrice: '',
-      // 折扣金额
-      discountPrice: '',
-      // 总价
-      totalPrice: '',
-
-      // 存入接口请求的司机费用,用于计算展示
-      thisDriverPrice: 0.0,
-      // 存入接口请求的取车费用,用于计算展示
-      thisDeliveryPrice: 0.0,
-      // 存入接口请求的还车费用,用于计算展示
-      thisReturnPrice: 0.0,
-
-      driverFeeShow: '', // 司机费用展示
+      totalFee: 0,
     }
   },
   computed: {
@@ -229,6 +199,9 @@ export default {
     },
     currentArea() {
       return useAreaStore().getCurrentArea
+    },
+    currentAreaSite() {
+      return useAreaStore().getCurrentAreaSite
     },
     subscribeDate() {
       return useOrderStore().getSubscribeDate
@@ -242,95 +215,16 @@ export default {
     subscribeTimeSlot() {
       return useOrderStore().getSubscribeTimeSlot
     },
-
-    // tabName() {
-    //   return this.$store.getters['getTabName']
-    // },
-    currentCarInfo() {
-      // return this.$store.getters['car/getCurrentCarInfo']
-    },
-    // ...mapGetters('time', {
-    //   startTime: 'getStartTime',
-    //   endTime: 'getEndTime',
-    //   startDate: 'getStartDate',
-    //   endDate: 'getEndDate',
-    //   startDateM: 'getStartDateM',
-    //   startDateD: 'getStartDateD',
-    //   endDateM: 'getEndDateM',
-    //   endDateD: 'getEndDateD',
-    //   dayToDay: 'getDayToDay',
-    // }),
-    // ...mapGetters('order', {
-    //   driverPrice: 'getDriverPrice', // 接口请求的司机费用
-    //   deliveryPrice: 'getDeliveryPrice', // 接口请求的取车费用
-    //   returnPrice: 'getReturnPrice', // 接口请求的还车费用
-    //   currentContactInfo: 'getCurrentContactInfo', // 当前选中的联系人信息
-    // }),
-    actNo() {
-      // return this.$store.getters['car/getActNo']
-    },
-    carModel() {
-      // return this.$store.getters['car/getCurrentCarInfo'].carModel
-    },
-    formatStartDate() {
-      // 格式化时间为 yyyyMMdd
-      let startDate = this.$store.getters['time/getStartDate']
-      if (startDate != null) {
-        startDate = startDate.replace(/-/g, '')
-      }
-      return startDate
-    },
-    formatEndDate() {
-      // 格式化时间为 yyyyMMdd
-      // let endDate = this.$store.getters['time/getEndDate']
-      // if (endDate != null) {
-      //   endDate = endDate.replace(/-/g, '')
-      // }
-      // return endDate
-    },
-    formatStartTime() {
-      // 格式化时间为 HHmmss
-      // let startTime = this.$store.getters['time/getStartTime']
-      // if (startTime != null) {
-      //   startTime = startTime.replace(/:/g, '') + '00'
-      // }
-      // return startTime
-    },
-    formatEndTime() {
-      // 格式化时间为 HHmmss
-      // let endTime = this.$store.getters['time/getEndTime']
-      // if (endTime != null) {
-      //   endTime = endTime.replace(/:/g, '') + '00'
-      // }
-      // return endTime
-    },
-    driverFeeTotal() {
-      // 计算司机费用
-      return (
-        Number(this.thisDriverPrice) +
-        Number(this.thisDeliveryPrice) +
-        Number(this.thisReturnPrice)
-      )
-    },
-    totalFee() {
-      // 计算总费用,并化为分
-      return (Number(this.driverFeeTotal) + Number(this.actualPrice)) * 100
-    },
   },
-  watch: {
-    driverFeeTotal: {
-      handler(val) {
-        // 司机费用,用于展示,保留两位小数
-        this.driverFeeShow = val.toFixed(2)
-      },
-      immediate: true,
-    },
-  },
+  watch: {},
   created() {
-    // 获取当前场地以及预约时间
-    // 通过接口获取司机以及服务费
-    // this.loadPriceInfo()
-    // this.loadPriceInfo('0')
+    console.log('currentSportHall:', this.currentSportHall)
+    console.log('currentArea:', this.currentArea)
+    console.log('currentAreaSite:', this.currentAreaSite)
+    console.log('subscribeDate:', this.subscribeDate)
+    console.log('subscribeTimeSlot:', this.subscribeTimeSlot)
+
+    this.getOrderPrice()
   },
   mounted() {},
   methods: {
@@ -341,134 +235,84 @@ export default {
     backPage() {
       this.$router.back()
     },
-    loadPriceInfo(key) {
-      // let base_comname = window.localStorage.getItem('REALUSERNAME')
-      console.log('loadPriceInfo', BASE_COMNAME)
-      let param = {
-        actNo: this.actNo,
-        priceAttrValueList: this.carModel,
-        saleCmpName: BASE_COMNAME,
-        startDate: this.formatStartDate,
-        startTime: this.formatStartTime,
-        finishDate: this.formatEndDate,
-        finishTime: this.formatEndTime,
-        buyDriverService: key ? key : this.isDrier,
-        buyDeliveryService: this.isPickupCar,
-        buyReturnService: this.isReturnCar,
+    // 获取订单价格
+    getOrderPrice() {
+      // {
+      //     "recName":{
+      //         "transDate":"20220407",
+      //         "actNo":"202112042249501338950598",
+      //         "saleCmpName":"广州睿颢软件技术有限公司",
+      //         "productName":"羽毛球场出租",
+      //         "srlID":"天河体育中心体育场",
+      //         "remark":""
+      //     },
+      //     "recList":[
+      //         {
+      //             "timeQuantum":"09:00-10:00",
+      //             "posList":"1号场"
+      //         }
+      //     ]
+      // }
+      const params = {
+        recName: {
+          transDate: this.subscribeDate,
+          actNo: this.currentArea.actNo,
+          saleCmpName: window.localStorage.getItem('REALUSERNAME'),
+          productName: this.currentArea.siteType + '出租',
+          srlID: this.currentArea.venueName,
+          remark: '',
+        },
+        recList: [
+          {
+            timeQuantum: this.subscribeTimeSlot,
+            posList: this.currentAreaSite,
+          },
+        ],
       }
-      getPriceInfo(param).then(res => {
-        console.log('rs', res.data.rs)
-        if (res.data.rs !== '1') {
-          return false
-        }
-        console.log('res.data.priceData', res.data.priceData)
-        let priceData = res.data.priceData
-        if (key) {
-          // 取车费用(折扣后)
-          this.$store.commit(
-            'order/setDeliveryPrice',
-            priceData.deliveryPriceAfterDiscount
-          )
-          // this.thisDeliveryPrice = Number(this.deliveryPrice)
-          // 还车费用(折扣后)
-          this.$store.commit(
-            'order/setReturnPrice',
-            priceData.returnPriceAfterDiscount
-          )
-          // this.thisReturnPrice = Number(this.returnPrice)
-        } else {
-          // 司机费用(折扣后)
-          this.$store.commit(
-            'order/setDriverPrice',
-            priceData.totalDriverPriceAfterDiscount
-          )
-          this.thisDriverPrice = Number(this.driverPrice)
-        }
 
-        this.originalPrice = priceData.totalCarRentPrice // 原价
-        this.actualPrice = priceData.totalCarRentPriceAfterDiscount // 实际价格
-        // this.discountPrice = priceData.reduction // 折扣金额
-        this.totalPrice = priceData.totalDiscountPrice // 总价
+      getVenueReservationPrice(params).then(res => {
+        if (res.data.rs === '1') {
+          console.log(res.data.rsInfo) // {"totalPrice":"160.00","totalDiscountPrice":"160.00"}
+          let rsInfo = JSON.parse(res.data.rsInfo)
+          this.totalFee = rsInfo.totalDiscountPrice
+        } else {
+          this.$toast(res.data.rs)
+        }
       })
     },
     orderSubmit() {
-      this.orderSuccessShow = true
-      // this.$router.push('/pay')
-      // console.log(
-      //   'currentContactInfo',
-      //   Object.keys(this.currentContactInfo).length
-      // )
-      // if (Object.keys(this.currentContactInfo).length === 0) {
-      //   this.$toast.fail('请选择承租人!')
-      //   return false
-      // }
-      // let params = {
-      //   actNo: this.actNo,
-      //   priceAttrValueList: this.carModel,
-      //   saleCmpName: BASE_COMNAME,
-      //   startDate: this.formatStartDate,
-      //   startTime: this.formatStartTime,
-      //   finishDate: this.formatEndDate,
-      //   finishTime: this.formatEndTime,
-      //   buyDriverService: this.isDrier,
-      //   buyDeliveryService: this.isPickupCar,
-      //   buyReturnService: this.isReturnCar,
-      //   receiver: this.currentContactInfo.name,
-      //   phone: this.currentContactInfo.tel,
-      //   address: this.currentContactInfo.addressDetail,
-      // }
-      // setCreatOrder(params).then(res => {
-      //   console.log('rs', res.data.rs)
-      //   // console.log('res.data.orderData', res.data.orderData)
-      //   if (res.data.rs === '1') {
-      //     this.orderSuccessShow = true
-      //   } else {
-      //     this.$toast.fail(res.data.msg)
-      //   }
-      // })
-    },
-    changeDriverRadio(name) {
-      // 是否佩带司机
-      this.isDrier = name
-      if (name === '1') {
-        this.thisDriverPrice = this.driverPrice
-        this.thisDeliveryPrice = 0.0
-        this.thisReturnPrice = 0.0
-        this.isPickupCar = '1'
-        this.isReturnCar = '1'
-      } else {
-        this.thisDriverPrice = 0.0
-        if (this.isPickupCar === '1') {
-          this.thisDeliveryPrice = this.deliveryPrice
+      // 下单
+      const params = {
+        recName: {
+          transDate: this.subscribeDate,
+          actNo: this.currentArea.actNo,
+          saleCmpName: window.localStorage.getItem('REALUSERNAME'),
+          productName: this.currentArea.siteType + '出租',
+          srlID: this.currentArea.venueName,
+          remark: '',
+        },
+        recList: [
+          {
+            timeQuantum: this.subscribeTimeSlot,
+            posList: this.currentAreaSite,
+          },
+        ],
+      }
+      createSiteReservationOrder(params).then(res => {
+        if (res.data.rs === '1') {
+          // console.log(res.data.rsInfo) // {"totalPrice":"160.00","totalDiscountPrice":"160.00"}
+          let rsInfo = JSON.parse(res.data.rsInfo)
+          // this.totalFee = rsInfo.totalDiscountPrice
+          console.log('rsInfo:', rsInfo)
+          // 提示下单成功
+          this.$toast('下单成功')
+
+          // 微信支付
+          this.orderSuccessShow = true
         } else {
-          this.thisDeliveryPrice = 0.0
+          this.$toast(res.data.rs)
         }
-        if (this.isReturnCar === '1') {
-          this.thisReturnPrice = this.returnPrice
-        } else {
-          this.thisReturnPrice = 0.0
-        }
-        // this.thisDeliveryPrice = this.deliveryPrice
-        // this.thisReturnPrice = this.returnPrice
-      }
-    },
-    changePickupCarRadio(name) {
-      // 是否自助取车
-      this.isPickupCar = name
-      if (name === '1' && this.isDrier === '0') {
-        this.thisDeliveryPrice = this.deliveryPrice
-      } else {
-        this.thisDeliveryPrice = 0.0
-      }
-    },
-    changeReturnCarRadio(name) {
-      // 是否自助还车
-      this.isReturnCar = name
-      if (name === '1' && this.isDrier === '0') {
-        this.thisReturnPrice = this.returnPrice
-      } else {
-        this.thisReturnPrice = 0.0
-      }
+      })
     },
   },
 }
@@ -571,5 +415,4 @@ export default {
   font-weight: 600;
   color: #565656;
 }
-
 </style>

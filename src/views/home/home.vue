@@ -154,6 +154,7 @@ export default {
         // 解决分享过来时获取不到appid的问题,从分享登录时存入sessionStorage中重新获取
         appid = storage.getItem('appid')
       }
+      window.localStorage.removeItem('user')
       silenceLogin({
         code: code,
         appid: appid,
@@ -181,6 +182,7 @@ export default {
           storage.setItem('guestMemberID', global_.userName)
           storage.setItem('appid', appid)
           storage.setItem('TELLERCOMPANY', res.data.TELLERCOMPANY)
+          storage.setItem('user', JSON.stringify(res.data))
           storage.setItem('userName', res.data.nickname)
           storage.setItem('userIcon', res.data.usrIcon)
           this.schoolName = storage.getItem('TELLERCOMPANY')

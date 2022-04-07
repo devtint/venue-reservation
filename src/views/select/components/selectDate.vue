@@ -100,8 +100,15 @@ export default {
       // 存储日期 pinia
       // 格式化日期20220910
       const year = date.getFullYear()
-      const month = date.getMonth() + 1
-      const day = date.getDate()
+      let month = date.getMonth() + 1
+      let day = date.getDate()
+      // 判断日期如果是一位数,前面补0
+      if (month < 10) {
+        month = `0${month}`
+      }
+      if (day < 10) {
+        day = `0${day}`
+      }
       // 存储日期20220203 pinia
       let newDate = `${year}${month}${day}`
       useOrderStore().updateSubscribeDate(newDate)
@@ -116,13 +123,20 @@ export default {
       console.log(date)
       // 格式化日期 星期
       const year = date.getFullYear()
-      const month = date.getMonth() + 1
-      const day = date.getDate()
+      let month = date.getMonth() + 1
+      let day = date.getDate()
       const weekMap = ['日', '一', '二', '三', '四', '五', '六']
       const week = weekMap[date.getDay()]
       console.log(date.getDay())
 
       // 存储日期20220203 pinia
+      // 判断日期如果是一位数,前面补0
+      if (month < 10) {
+        month = `0${month}`
+      }
+      if (day < 10) {
+        day = `0${day}`
+      }
       let newDate = `${year}${month}${day}`
       useOrderStore().updateSubscribeDate(newDate)
       // 存储日期用于展示 2022年02月03日 pinia
