@@ -16,6 +16,14 @@ export const getSportsHallFields = params => {
     params,
   })
 }
+// (查询场馆场地类型)querySportsHallFieldsType
+export const getSportsHallFieldsType = params => {
+  return request({
+    method: 'GET',
+    url: '/search/querySportsHallFieldsType',
+    params,
+  })
+}
 
 // (查询场地预约信息)querySportsSiteInfor
 export const getSportSiteResInfo = params => {

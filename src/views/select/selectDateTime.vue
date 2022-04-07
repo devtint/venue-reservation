@@ -13,8 +13,8 @@
     </div>
 
     <!-- 选择预约时间 -->
-    <div class="selectTime">
-      <select-time />
+    <div class="selectTime" >
+      <select-time/>
     </div>
 
     <!-- 预约按钮 确定时间 -->
@@ -54,7 +54,9 @@ export default {
   },
   props: {},
   data() {
-    return {}
+    return {
+      showSelectTime: false,
+    }
   },
   computed: {},
   watch: {},
@@ -75,9 +77,12 @@ export default {
       console.log(selectDate, selectWeek, selectTimeSlot)
       if (selectTimeSlot) {
         this.$router.push('/confirm')
-      }else{
+      } else {
         this.$toast.fail('请选择预约时间')
       }
+    },
+    showSelectTime() {
+      this.showSelectTime = true
     },
   },
 }

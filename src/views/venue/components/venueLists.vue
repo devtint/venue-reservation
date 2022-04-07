@@ -27,7 +27,8 @@
                 </template>
                 <template #title>
                   <div class="itemTitle van-ellipsis">
-                    {{ item.siteType + ' ' + item.siteNumber }}
+                    <!-- {{ item.siteType + ' ' + item.siteNumber }} -->
+                    {{ item.siteType }}
                   </div>
                 </template>
 
@@ -58,7 +59,7 @@
 </template>
 
 <script>
-import { getSportsHallFields } from '@/api/area'
+import { getSportsHallFieldsType } from '@/api/area'
 import { useHomeStore } from '@/store/home'
 import { useAreaStore } from '@/store/area'
 import { BASE_DOMAIN } from '@/global/config'
@@ -108,14 +109,18 @@ export default {
       this.onLoad()
     },
     loadSportsHallFields() {
-      getSportsHallFields({
+      getSportsHallFieldsType({
         venueName: useHomeStore().getCurrentSportHall.venueName,
+        REALUSERNAME: window.localStorage.getItem('REALUSERNAME'),
       }).then(res => {
         if (res.data.rs !== '1') {
           console.log(res.data.rs)
         } else {
-          console.log('querySportsHallFields', res.data.querySportsHallFields)
-          let hallList = res.data.querySportsHallFields
+          console.log(
+            'querySportsHallFieldsType',
+            res.data.querySportsHallFieldsType
+          )
+          let hallList = res.data.querySportsHallFieldsType
           this.newList = hallList.map(item => {
             if (item.siteFile) {
               item.siteFile = `${BASE_DOMAIN}/socketServer/images/cardMall/imgsrc/${item.siteFile}`
@@ -131,7 +136,7 @@ export default {
           console.log('list', this.list)
           if (
             this.list.length >=
-            parseInt(res.data.querySportsHallFields_totalRecNum)
+            parseInt(res.data.querySportsHallFieldsType_totalRecNum)
           ) {
             this.finished = true
           }

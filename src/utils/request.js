@@ -54,7 +54,7 @@ request.interceptors.request.use(
     // 如果是登录请求,那么执行完再执行其它接口请求
 
     // 如果是 post 请求,并且请求的数据是对象格式
-    if (config.method === 'post') {
+    if (config.method === 'post' && config.data) {
       // console.log('old config.data', config.data)
       // 设置请求头 发送的数据是x-www-form-urlencoded 格式
       config.headers['Content-Type'] = 'application/x-www-form-urlencoded'
@@ -78,6 +78,7 @@ request.interceptors.request.use(
     if (user) {
       // config.headers.Authorization = `Bearer ${user.token}`
       config.headers.res_token = `${user.res_token}`
+      config.headers['X-CSRF-TOKEN'] = `${user.token.token}`
     }
     // 当这里 return config 之后，请求才会真正的发出去
     // console.log('new请求', config)

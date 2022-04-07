@@ -13,7 +13,10 @@
       </template>
       <template #title>
         <h3 class="van-multi-ellipsis">
-          {{ currentArea.siteType + ' ' + currentArea.siteNumber }}
+          {{currentArea.venueName}}
+        </h3>
+        <h3 class="van-multi-ellipsis">
+          {{currentArea.siteType}} {{ currentAreaSite ? currentAreaSite : '' }}
         </h3>
       </template>
       <template #desc>
@@ -39,9 +42,15 @@ export default {
     currentArea() {
       return useAreaStore().getCurrentArea
     },
+    currentAreaSite() {
+      return useAreaStore().getCurrentAreaSite
+    },
   },
   watch: {},
-  created() {},
+  created() {
+    console.log('详情卡片组件创建')
+    console.log(this.currentArea)
+  },
   mounted() {},
   methods: {},
 }

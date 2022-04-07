@@ -46,6 +46,9 @@ export default {
     currentArea() {
       return useAreaStore().getCurrentArea
     },
+    currentAreaSite() {
+      return useAreaStore().getCurrentAreaSite
+    },
     subscribeDate() {
       return useOrderStore().getSubscribeDate
     },
@@ -57,9 +60,16 @@ export default {
       },
       // immediate: true,
     },
+    currentAreaSite: {
+      handler(newVal) {
+        this.loadSportSiteResInfo()
+      },
+      // immediate: true,
+    },
   },
   created() {
-    this.loadSportSiteResInfo()
+    console.log('选择时间组件创建')
+    // this.loadSportSiteResInfo()
     // 清空已选择的时间段
     useOrderStore().updateSubscribeTimeSlot('')
   },
@@ -89,7 +99,7 @@ export default {
         appoDate: this.subscribeDate,
         venueName: this.currentArea.venueName,
         siteType: this.currentArea.siteType,
-        siteNumber: this.currentArea.siteNumber,
+        siteNumber: this.currentAreaSite,
         actNo: this.currentArea.actNo,
       }
       getSportSiteResInfo(param).then(res => {
@@ -98,9 +108,22 @@ export default {
           return
         }
         this.timeLists = res.data.querySportsSiteInfor.map(item => {
-          return {
-            ...item,
-            selected: false,
+          // 切割时间段信息 .之前的是时间段，之后的是场地类型
+          if (item.timeSlot.indexOf('.') > -1) {
+            let timeSlot = item.timeSlot.split('.')[0]
+            let siteType = item.timeSlot.split('.')[1]
+
+            return {
+              ...item,
+              timeSlot,
+              siteType,
+              selected: false,
+            }
+          } else {
+            return {
+              ...item,
+              selected: false,
+            }
           }
         })
         console.log(this.timeLists)

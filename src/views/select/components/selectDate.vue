@@ -1,7 +1,7 @@
 <template>
   <div class="changeDate">
     <div class="title">
-      <h3>选择预约日期</h3>
+      <h3>选择预约日期和场地</h3>
     </div>
     <van-cell :title="title" :value="date" @click="show = true">
       <template>
@@ -10,32 +10,83 @@
         </div>
       </template>
     </van-cell>
+    <!-- 选择场地 -->
+    <van-cell :title="siteTitle" :value="site" @click="selectSite">
+      <template>
+        <div class="date">
+          <span>{{ site ? site : '请选择场地' }}</span>
+        </div>
+      </template>
+    </van-cell>
+    <!-- <van-field
+      readonly
+      clickable
+      label="场地"
+      :value="site"
+      placeholder="选择场地"
+      input-align="right"
+      @click="showPicker = true"
+    /> -->
+    <van-popup v-model="showPicker" round position="bottom">
+      <van-picker
+        show-toolbar
+        :columns="columns"
+        @cancel="showPicker = false"
+        @confirm="siteConfirm"
+      />
+    </van-popup>
     <van-calendar v-model="show" :show-confirm="false" @confirm="onConfirm" />
   </div>
 </template>
 
 <script>
+import { useHomeStore } from '@/store/home'
 import { useOrderStore } from '@/store/order'
+import { useAreaStore } from '@/store/area'
+import { getSportsHallFields } from '@/api/area'
+import { BASE_DOMAIN } from '@/global/config'
 export default {
   name: '',
   components: {},
+  emits: ['showSelectTime'],
   props: {},
   data() {
     return {
       show: false,
       title: '选择日期',
+      siteTitle: '选择场地',
       date: '',
+      site: '',
+      showPicker: false,
+      columns: [
+        '1号场',
+        '2号场',
+        '3号场',
+        '4号场',
+        '5号场',
+        '6号场',
+        '7号场',
+        '8号场',
+        '9号场',
+        '10号场',
+        '11号场',
+        '12号场',
+      ],
     }
   },
   computed: {
     subscribeDate() {
       return useOrderStore().getSubscribeDate
     },
+    currentArea() {
+      return useAreaStore().getCurrentArea
+    },
   },
   watch: {},
   created() {
     // 默认选择明天
     this.date = this.getTomorrow()
+    this.loadSportsHallFields()
   },
   mounted() {},
   methods: {
@@ -90,6 +141,55 @@ export default {
       this.date = this.formatDate(date)
       this.title = '重新选择日期'
       console.log('onConfirm', this.subscribeDate)
+    },
+    siteConfirm(site) {
+      this.site = site
+      useAreaStore().setCurrentAreaSite(site)
+      this.siteTitle = '重新选择场地'
+      this.showPicker = false
+      // 渲染父组件的预约时间
+      this.$emit('showSelectTime')
+    },
+    selectSite() {
+      this.showPicker = true
+    },
+    loadSportsHallFields() {
+      getSportsHallFields({
+        venueName: useHomeStore().getCurrentSportHall.venueName,
+        REALUSERNAME: window.localStorage.getItem('REALUSERNAME'),
+      }).then(res => {
+        if (res.data.rs !== '1') {
+          console.log(res.data.rs)
+        } else {
+          console.log('querySportsHallFields', res.data.querySportsHallFields)
+          let hallList = res.data.querySportsHallFields
+          let columns = []
+          this.newList = hallList.map(item => {
+            if (item.siteFile) {
+              item.siteFile = `${BASE_DOMAIN}/socketServer/images/cardMall/imgsrc/${item.siteFile}`
+            }
+            if (item.siteType === this.currentArea.siteType) {
+              columns = columns.concat(item.siteNumber)
+            }
+            return item
+          })
+          // this.newList = this.newList.concat(hallList)
+          this.columns = columns
+          // useHomeStore().setSportsHalls(this.newList)
+          // this.list = this.sportsHalls
+          this.list = this.newList
+
+          console.log('list', this.list)
+          if (
+            this.list.length >=
+            parseInt(res.data.querySportsHallFields_totalRecNum)
+          ) {
+            this.finished = true
+          }
+
+          this.loading = false
+        }
+      })
     },
   },
 }

@@ -8,16 +8,23 @@ export const useAreaStore = defineStore({
     return {
       // 当前选择的场地
       currentArea: {},
+      currentAreaSite: '',
     }
   },
   getters: {
     getCurrentArea: state => {
       return state.currentArea
     },
+    getCurrentAreaSite: state => {
+      return state.currentAreaSite
+    },
   },
   actions: {
     setCurrentArea(payload) {
       this.currentArea = payload
+    },
+    setCurrentAreaSite(payload) {
+      this.currentAreaSite = payload
     },
     // // 异步actions
     // async login(account, pwd) {
