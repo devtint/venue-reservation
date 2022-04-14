@@ -18,17 +18,16 @@
           @load="onLoad"
         >
           <van-grid :gutter="15" :column-num="1">
-            <!-- <van-grid-item v-for="item in list" :key="item"> -->
-            <van-grid-item>
+            <van-grid-item v-for="item in list" :key="item">
+              <!-- <van-grid-item> -->
               <div class="orderItem">
                 <div class="useStatus">
                   <span
-                    >天河体育中心体育场<van-tag
-                      color="#f4f4f4"
-                      text-color="#adadad"
-                      >1号羽毛球场</van-tag
-                    ></span
-                  >
+                    >{{ item.venueName }}
+                    <!-- <van-tag color="#f4f4f4" text-color="#adadad">{{
+                      item.siteType + ' ' + item.siteNum
+                    }}</van-tag> -->
+                  </span>
                   <!-- <span
                     :class="{
                       statusShow: item.tradeStatus === '2',
@@ -38,14 +37,23 @@
                       item.tradeStatus !== '2' ? item.orderStatusShow : '已取消'
                     }}</span
                   > -->
-                  <span>待付款</span>
+                  <span>{{
+                    item.payStatus === '3' ? '已支付' : '待付款'
+                  }}</span>
                 </div>
                 <div class="orderInfo">
-                  <!-- <p>订单编号 : {{ item.billNo }}</p> -->
-                  <p>下单时间 : 2022-02-01 16:34:45</p>
-                  <p>订单编号 : 163023495883</p>
-                  <p>预约日期 : 2022-02-02 周二</p>
-                  <p>预约时间 : 10:00-11:00</p>
+                  <p>
+                    <!-- 预约场地 : {{ siteOF(item.siteType) + ' ' + item.siteNum }} -->
+                    预约场地 : {{ item.siteType + ' ' + item.siteNum }}
+                  </p>
+                  <p>下单时间 : {{ item.transDate + ' ' + item.transTime }}</p>
+                  <p>订单编号 : {{ item.billNo }}</p>
+                  <p>预约日期 : {{ item.siteUseDateBegin }}</p>
+                  <p>
+                    预约时间 :
+                    {{ item.siteUseBeginTime + '-' + item.siteUseEndTime }}
+                  </p>
+                  <p>订单金额 : ￥{{ item.totalPrice }}</p>
                   <div class="orderBtn">
                     <template>
                       <van-button
@@ -60,6 +68,7 @@
                         size="small"
                         color="#409eff"
                         @click="weChatPay(item)"
+                        v-if="item.payStatus !== '3'"
                         >去支付</van-button
                       >
                       <van-button
@@ -67,6 +76,7 @@
                         size="small"
                         color="#a6a9ad"
                         @click="cancelOrder(item)"
+                        v-if="item.orderStatus !== '2'"
                         >取消订单</van-button
                       >
                     </template>
@@ -117,12 +127,11 @@
 </template>
 
 <script>
-// import {
-//   getNotOutOrder,
-//   getAllOrder,
-//   setCancelOrder,
-//   getOrderFeeDetailed,
-// } from '@/api/order'
+import {
+  getMyOrders,
+  getMyOrdersByPayStatus,
+  getMyOrdersCancelled,
+} from '@/api/order'
 import { BASE_COMNAME } from '@/global/config'
 import wx from 'weixin-js-sdk'
 // import moment from 'moment'
@@ -145,7 +154,15 @@ export default {
       actions: [], // 描述信息
     }
   },
-  computed: {},
+  computed: {
+    siteOF(item) {
+      if (item.indexOf('出租')) {
+        // 去掉'出租'
+        return item.replace('出租', '')
+      }
+      return item
+    },
+  },
   watch: {
     $router() {
       this.onRefresh()
@@ -172,24 +189,30 @@ export default {
         this.page++
         // console.log('this.thisTab', this.thisTab)
         // 判断有没有登录过期
-        let memberID = window.localStorage.getItem('memberID')
-        if (memberID) {
-          if (this.thisTab === '0') {
-            this.loadAllOrder()
-          } else {
-            this.loadNotOutOrder()
-          }
+        // let memberID = window.localStorage.getItem('memberID')
+        // if (memberID) {
+        if (this.thisTab === '0') {
+          this.loadAllOrder()
+        } else if (this.thisTab === '3') {
+          this.loadOrderByCancelled()
         } else {
-          // this.$router.push('/login')
-          // 提示登录过期,跳转到登录页面
-          this.$toast('登录过期,请重新登录')
-          // 加载状态结束
-          this.loading = false
-          // 数据全部加载完成
-          // if (this.totalNum.length) {
-          this.finished = true
-          // }
+          if (this.thisTab === '1') {
+            this.loadOrderByPayStatus('0')
+          } else {
+            this.loadOrderByPayStatus('3')
+          }
         }
+        // } else {
+        // this.$router.push('/login')
+        // 提示登录过期,跳转到登录页面
+        // this.$toast('登录过期,请重新登录')
+        // // 加载状态结束
+        // this.loading = false
+        // // 数据全部加载完成
+        // // if (this.totalNum.length) {
+        // this.finished = true
+        // }
+        // }
         // for (let i = 0; i < 10; i++) {
         //   this.list.push(this.list.length + 1)
         // }
@@ -215,12 +238,12 @@ export default {
     navigation(item) {
       this.$toast('正在跳转导航...')
       // 根据地址获取经纬度
-      // let region = item.city
-      // let address = item.address
-      // let venueName = item.venueName
-      let region = '广州市'
-      let address = '天河路299号'
-      let venueName = '天河体育中心体育场'
+      let region = item.city
+      let address = item.address
+      let venueName = item.venueName
+      // let region = '广州市'
+      // let address = '天河路299号'
+      // let venueName = '天河体育中心体育场'
       let map = new TMap.service.Geocoder()
       let data = map.getLocation({
         address: `${region}${address}`,
@@ -329,31 +352,65 @@ export default {
       })
     },
     loadAllOrder() {
-      getAllOrder({
+      getMyOrders({
         currentPage: this.page,
         numOfPerPage: this.pageSize,
       }).then(res => {
+        if (res.data.rs !== '1') {
+          console.log('获取订单失败', res.data.rs)
+          return
+        }
         console.log('获取全部订单', res)
-        this.list = this.list.concat(res.data.queryMyAllCarOrders)
-        this.totalNum = res.data.queryMyAllCarOrders_totalRecNum
+        this.list = this.list.concat(res.data.queryMyAllOrdersBySport)
+        this.totalNum = res.data.queryMyAllOrdersBySport_totalRecNum
 
-        console.log('orders(全部) list', this.list, 'page:', this.page)
         this.loading = false
+        console.log('orders(全部) list', this.list, 'page:', this.page)
         this.finished =
-          this.list.length >= res.data.queryMyAllCarOrders_totalRecNum
+          this.list.length >= res.data.queryMyAllOrdersBySport_totalRecNum
       })
     },
-    loadNotOutOrder() {
-      getNotOutOrder({
+    loadOrderByPayStatus(i) {
+      getMyOrdersByPayStatus({
         currentPage: this.page,
         numOfPerPage: this.pageSize,
+        payStatus: i,
       }).then(res => {
-        this.list = this.list.concat(res.data.queryMyCarOrdersOfNoTravel)
-        this.totalNum = res.data.queryMyCarOrdersOfNoTravel_totalRecNum
-        console.log('orders(未出行) list', this.list, 'page:', this.page)
+        if (res.data.rs !== '1') {
+          console.log('根据交易状态获取订单失败', res.data.rs)
+          return
+        }
+        this.list = this.list.concat(res.data.queryMyOrdersPayStatusBySport)
+        this.totalNum = res.data.queryMyOrdersPayStatusBySport_totalRecNum
+        console.log(
+          'orders(根据交易状态) list',
+          'payStatus:',
+          i,
+          this.list,
+          'page:',
+          this.page
+        )
         this.loading = false
         this.finished =
-          this.list.length >= res.data.queryMyCarOrdersOfNoTravel_totalRecNum
+          this.list.length >= res.data.queryMyOrdersPayStatusBySport_totalRecNum
+      })
+    },
+    loadOrderByCancelled() {
+      getMyOrdersCancelled({
+        currentPage: this.page,
+        numOfPerPage: this.pageSize,
+        // payStatus: this.payStatus,
+      }).then(res => {
+        if (res.data.rs !== '1') {
+          console.log('获取已取消订单失败', res.data.rs)
+          return
+        }
+        this.list = this.list.concat(res.data.queryMyCancelledOrdersBySport)
+        this.totalNum = res.data.queryMyCancelledOrdersBySport_totalRecNum
+        console.log('orders(已取消) list', this.list, 'page:', this.page)
+        this.loading = false
+        this.finished =
+          this.list.length >= res.data.queryMyCancelledOrdersBySport_totalRecNum
       })
     },
   },
