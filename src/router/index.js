@@ -70,19 +70,23 @@ const routes = [
   {
     path: '/confirm',
     name: 'confirm',
-    component: () => import('@/views/confirm/confirmOrder.vue'),
+    component: () =>
+      import(
+        /* webpackChunkName: "confirm" */ '@/views/confirm/confirmOrder.vue'
+      ),
     // 只有经过身份验证的用户才能创建订单
     // meta: { requiresAuth: true },
+  },
+  {
+    path: '/over',
+    name: 'over',
+    component: () =>
+      import(/* webpackChunkName: "confirm" */ '@/views/confirm/orderOver.vue'),
   },
   {
     path: '/rules',
     name: 'rules',
     component: () => import('@/views/confirm/page/orderRules.vue'),
-  },
-  {
-    path: '/pay',
-    name: 'pay',
-    component: () => import('@/views/pay/weChatPay.vue'),
   },
 ]
 

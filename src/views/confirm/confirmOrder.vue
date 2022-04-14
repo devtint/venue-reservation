@@ -158,22 +158,18 @@
       </van-submit-bar>
     </div>
 
-    <div class="orderSuccess">
+    <!-- <div class="orderSuccess">
       <we-chat-pay :show="orderSuccessShow"></we-chat-pay>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
 // import { BASE_COMNAME } from '@/global/config'
 
-import wx from 'weixin-js-sdk'
-
 import { useAreaStore } from '@/store/area'
 import { useHomeStore } from '@/store/home'
 import { useOrderStore } from '@/store/order'
-
-import weChatPay from '../pay/weChatPay.vue'
 
 import {
   getVenueReservationPrice,
@@ -182,9 +178,7 @@ import {
 
 export default {
   name: 'confirmOrder',
-  components: {
-    weChatPay,
-  },
+  components: {},
   props: {},
   data() {
     return {
@@ -304,11 +298,18 @@ export default {
           let rsInfo = JSON.parse(res.data.rsInfo)
           // this.totalFee = rsInfo.totalDiscountPrice
           console.log('rsInfo:', rsInfo)
+          // 存储订单信息(用于支付)
+          let orderInfo = {
+            billNo: rsInfo.billNo,
+            totalAmt: rsInfo.totalAmt,
+          }
+          useOrderStore().updateOrderInfo(orderInfo)
           // 提示下单成功
-          this.$toast('下单成功')
+          // this.$toast('下单成功')
 
-          // 微信支付
-          this.orderSuccessShow = true
+          // 下单成功界面
+          this.$router.push('/over')
+          // this.orderSuccessShow = true
         } else {
           this.$toast(res.data.rs)
         }

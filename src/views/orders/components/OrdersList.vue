@@ -67,7 +67,7 @@
                         class="weChatPay"
                         size="small"
                         color="#409eff"
-                        @click="weChatPay(item)"
+                        @click="goPay(item)"
                         v-if="item.payStatus !== '3'"
                         >去支付</van-button
                       >
@@ -81,40 +81,6 @@
                       >
                     </template>
                   </div>
-                  <!-- <div class="orderBtn" v-if="item.tradeStatus !== '2'">
-                    <template
-                      v-if="
-                        item.orderStatusShow !== '已提车' &&
-                        item.orderStatusShow !== '已还车'
-                      "
-                    >
-                      <van-button
-                        class="cancelOrder"
-                        size="small"
-                        type="warning"
-                        @click="cancelOrder(item)"
-                        >取消订单</van-button
-                      >
-                    </template>
-                    <template v-if="item.driver">
-                      <van-button
-                        class="checkDriver"
-                        size="small"
-                        type="primary"
-                        @click="checkDriver(item)"
-                        >查看司机</van-button
-                      >
-                    </template>
-                    <template v-if="item.orderStatusShow === '已还车'">
-                      <van-button
-                        class="feeDetailed"
-                        size="small"
-                        type="primary"
-                        @click="feeDetailed(item)"
-                        >费用明细</van-button
-                      >
-                    </template>
-                  </div> -->
                 </div>
               </div>
             </van-grid-item>
@@ -122,6 +88,12 @@
         </van-list>
         <div style="height: 3rem"></div>
       </van-pull-refresh>
+    </div>
+    <div class="orderSuccess">
+      <!-- <WeChatPay ref="orderPayShow"></WeChatPay> -->
+      <!-- <we-chat-pay ref="orderPayShow"></we-chat-pay> -->
+      <mobile-pay ref="mobilePayShow"></mobile-pay>
+      <!-- <mobile-pay :show="mobilePayShow"></mobile-pay> -->
     </div>
   </div>
 </template>
@@ -134,10 +106,16 @@ import {
 } from '@/api/order'
 import { BASE_COMNAME } from '@/global/config'
 import wx from 'weixin-js-sdk'
+
+import { useOrderStore } from '@/store/order'
+
+import MobilePay from '@/components/MobilePay.vue'
 // import moment from 'moment'
 export default {
   name: 'OrdersList',
-  components: {},
+  components: {
+    MobilePay,
+  },
   props: ['thisTab'],
   data() {
     return {
@@ -152,6 +130,8 @@ export default {
       showDescription: false, // 是否展示描述信息
       descriptionText: '', // 描述信息
       actions: [], // 描述信息
+
+      // orderPayShow: false, // 是否展示支付信息
     }
   },
   computed: {
@@ -317,40 +297,6 @@ export default {
           })
         })
     },
-    // 查看司机
-    checkDriver(item) {
-      this.showDescription = true
-      this.descriptionText = '当前指派的司机详情'
-      this.actions = [
-        {
-          name: '司机姓名：' + item.driver,
-        },
-        {
-          name: '联系方式：' + item.driverMobile,
-        },
-      ]
-    },
-    // 费用明细
-    feeDetailed(item) {
-      this.showDescription = true
-      this.descriptionText = '所有费用明细'
-      // 费用计算清单：基础租车费、司机费用、超百公里费用、过路费、其它费用，总计费用。
-      getOrderFeeDetailed({
-        billNo: item.billNo,
-      }).then(res => {
-        if (res.data.rs === '1') {
-          let data = res.data.queryMyCarOrderCostDtl
-          this.actions = []
-          data.forEach(item => {
-            this.actions.push({
-              name: item.srlID + '：' + item.costTotal,
-            })
-          })
-        } else {
-          this.$toast(res.data.rs)
-        }
-      })
-    },
     loadAllOrder() {
       getMyOrders({
         currentPage: this.page,
@@ -412,6 +358,17 @@ export default {
         this.finished =
           this.list.length >= res.data.queryMyCancelledOrdersBySport_totalRecNum
       })
+    },
+    goPay(item) {
+      console.log('去支付', item)
+      let orderInfo = {
+        billNo: item.billNo,
+        totalAmt: item.totalPrice,
+      }
+      useOrderStore().updateOrderInfo(orderInfo)
+      // console.log('goPay',this.$refs.orderPayShow)
+      this.$refs.mobilePayShow.showPopup()
+      // this.mobilePayShow = true
     },
   },
 }

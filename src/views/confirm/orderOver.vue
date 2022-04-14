@@ -1,6 +1,6 @@
 <template>
-  <div class="weChatPay">
-    <van-popup v-model="show" style="width: 100%; height: 100%">
+  <div class="orderOver">
+    <van-popup v-model="orderOverShow" style="width: 100%; height: 100%">
       <div class="orderSuccessContainer">
         <van-nav-bar
           fixed
@@ -39,28 +39,30 @@
         <template>
           <div class="btnBox1">
             <van-button block type="default" to="orders">查看订单</van-button>
-            <van-button block color="#fec760" @click="weChatPay"
-              >去支付</van-button
-            >
+            <van-button block color="#fec760" @click="goPay">去支付</van-button>
           </div>
         </template>
       </div>
     </van-popup>
+    <div class="orderSuccess">
+      <mobile-pay ref="mobilePayShow"></mobile-pay>
+    </div>
   </div>
 </template>
 
 <script>
+
+import MobilePay from '@/components/MobilePay.vue'
+
 export default {
-  name: 'weChatPay',
-  components: {},
-  props: {
-    show: {
-      type: Boolean,
-      default: false,
-    },
+  name: 'orderOver',
+  components: {
+    MobilePay,
   },
+  props: [],
   data() {
     return {
+      orderOverShow: true,
       time: 30 * 60 * 1000,
     }
   },
@@ -72,8 +74,8 @@ export default {
     toOrders() {
       this.$router.push('/orders')
     },
-    weChatPay() {
-      console.log('weChatPay')
+    goPay() {
+      this.$refs.mobilePayShow.showPopup()
     },
   },
 }

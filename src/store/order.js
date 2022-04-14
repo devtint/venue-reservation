@@ -14,6 +14,8 @@ export const useOrderStore = defineStore({
       subscribeWeek: '',
       // 预约时间段
       subscribeTimeSlot: '',
+      // 订单信息
+      orderInfo: {}
     }
   },
   getters: {
@@ -33,6 +35,10 @@ export const useOrderStore = defineStore({
     getSubscribeTimeSlot: state => {
       return state.subscribeTimeSlot
     },
+    // 获取订单信息
+    getOrderInfo: state => {
+      return state.orderInfo
+    }
   },
   actions: {
     // 更新预约日期
@@ -51,6 +57,10 @@ export const useOrderStore = defineStore({
     updateSubscribeTimeSlot(timeSlot) {
       this.subscribeTimeSlot = timeSlot
     },
+    // 更新订单信息
+    updateOrderInfo(orderInfo) {
+      this.orderInfo = orderInfo
+    }
     // // 异步actions
     // async login(account, pwd) {
     //   const { data } = await api.login(account, pwd)
