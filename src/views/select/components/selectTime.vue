@@ -54,12 +54,12 @@ export default {
     },
   },
   watch: {
-    subscribeDate: {
-      handler(newVal) {
-        this.loadSportSiteResInfo()
-      },
-      // immediate: true,
-    },
+    // subscribeDate: {
+    //   handler(newVal) {
+    //     // this.loadSportSiteResInfo()
+    //   },
+    //   // immediate: true,
+    // },
     currentAreaSite: {
       handler(newVal) {
         this.loadSportSiteResInfo()

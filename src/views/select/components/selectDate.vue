@@ -84,16 +84,18 @@ export default {
   },
   watch: {},
   created() {
-    // 默认选择明天
-    this.date = this.getTomorrow()
+    this.date = this.setDefaultDate()
     this.loadSportsHallFields()
+    useAreaStore().setCurrentAreaSite('')
   },
   mounted() {},
   methods: {
-    getTomorrow() {
-      // 默认明天
+    // 设置默认日期
+    setDefaultDate() {
+      // 默认今天
       let date = new Date()
-      date.setDate(date.getDate() + 1)
+      // 默认明天
+      // date.setDate(date.getDate() + 1)
 
       const weekMap = ['日', '一', '二', '三', '四', '五', '六']
       const week = weekMap[date.getDay()]
@@ -117,7 +119,7 @@ export default {
       useOrderStore().updateSubscribeDateShow(newDateStr)
       // 存储星期
       useOrderStore().updateSubscribeWeek(week)
-      return `${year}年${month}月${day}日 星期${week}`
+      return `${year}年${month}月${day}日 周${week}`
     },
     formatDate(date) {
       console.log(date)
@@ -145,13 +147,14 @@ export default {
       // 存储星期
       useOrderStore().updateSubscribeWeek(week)
 
-      return `${year}年${month}月${day}日 星期${week}`
+      return `${year}年${month}月${day}日 周${week}`
       // return `${date.getFullYear()}-${
       //   date.getMonth() + 1
       // }-${date.getDate()} 星期${week}`
     },
     onConfirm(date) {
       this.show = false
+      useOrderStore().updateSubscribeDate('')
       this.date = this.formatDate(date)
       this.title = '重新选择日期'
       console.log('onConfirm', this.subscribeDate)
