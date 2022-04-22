@@ -45,12 +45,12 @@ export const useMapStore = defineStore({
   // 可以在 strategies 里自定义 key 值，并将存放位置由 sessionStorage 改为 localStorage
   persist: {
     enabled: true,
-    // strategies: [
-    //   {
-    //     key: 'my_user',
-    //     storage: localStorage,
-    //     paths: ['name', 'age'], // 持久化部分的 state
-    //   },
-    // ],
+    strategies: [
+      {
+        key: 'currentLocation',
+        storage: sessionStorage,
+        paths: ['currentLocation', 'mapLocation'], // 持久化部分的 state
+      },
+    ],
   },
 })

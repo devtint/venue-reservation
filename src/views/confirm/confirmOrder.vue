@@ -247,6 +247,11 @@ export default {
       //         }
       //     ]
       // }
+      // 时间段09:00-10:00 转为090000-100000
+      // let start = this.subscribeTimeSlot.split('-')[0]
+      // let end = this.subscribeTimeSlot.split('-')[1]
+      // start = start.split(':')[0] + start.split(':')[1] + '00'
+      // end = end.split(':')[0] + end.split(':')[1] + '00'
       const params = {
         recName: {
           transDate: this.subscribeDate,
@@ -259,11 +264,12 @@ export default {
         recList: [
           {
             timeQuantum: this.subscribeTimeSlot,
+            // timeQuantum: `${start}-${end}`,
             posList: this.currentAreaSite,
           },
         ],
       }
-
+      console.log('params:', params)
       getVenueReservationPrice(params).then(res => {
         if (res.data.rs === '1') {
           console.log(res.data.rsInfo) // {"totalPrice":"160.00","totalDiscountPrice":"160.00"}
@@ -275,6 +281,12 @@ export default {
       })
     },
     orderSubmit() {
+      // 时间段09:00-10:00 转为090000-100000
+      
+      // let start = this.subscribeTimeSlot.split('-')[0]
+      // let end = this.subscribeTimeSlot.split('-')[1]
+      // start = start.split(':')[0] + start.split(':')[1] + '00'
+      // end = end.split(':')[0] + end.split(':')[1] + '00'
       // 下单
       const params = {
         recName: {
@@ -288,10 +300,12 @@ export default {
         recList: [
           {
             timeQuantum: this.subscribeTimeSlot,
+            // timeQuantum: `${start}-${end}`,
             posList: this.currentAreaSite,
           },
         ],
       }
+      console.log('params:', params)
       createSiteReservationOrder(params).then(res => {
         if (res.data.rs === '1') {
           // console.log(res.data.rsInfo) // {"totalPrice":"160.00","totalDiscountPrice":"160.00"}

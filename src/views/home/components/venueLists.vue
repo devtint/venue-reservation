@@ -39,17 +39,13 @@
                 </template>
 
                 <template #price>
-                  
                   <div>电话:{{ item.phone }}</div>
                 </template>
                 <template #num>
                   <!-- 场地距离 -->
                   <div>
                     <span><van-icon color="#fec864" name="location-o" /></span>
-                    <span
-                      :onload="mapDistance(item.city, item.address)"
-                      style="color: #fec864"
-                    >{{ distance }}</span >
+                    <span style="color: #fec864">{{ item.distance }}</span>
                     <span style="color: #ccc">km</span>
                   </div>
                   <!-- <van-button
@@ -75,7 +71,7 @@ import { getSportsHalls } from '@/api/home'
 import wx from 'weixin-js-sdk'
 import { useHomeStore } from '@/store/home'
 import { useMapStore } from '@/store/map'
-
+import { BASE_DOMAIN } from '@/global/config'
 // import { TMap } from '@/api/map'
 export default {
   name: 'venueLists',
@@ -114,7 +110,7 @@ export default {
       console.log('initLocation:::')
     },
     // 计算到每个场馆的距离
-    mapDistance(region, address) {
+    mapDistance(region, address, index) {
       wx.ready(() => {
         wx.getLocation({
           type: 'gcj02', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
@@ -128,13 +124,13 @@ export default {
               latitude,
               longitude,
             })
-            this.getLocation(region, address)
+            this.getLocation(region, address, index)
           },
         })
       })
     },
     // 根据地址获取经纬度
-    getLocation(region, address) {
+    getLocation(region, address, index) {
       let lat, lng
       let map = new TMap.service.Geocoder()
       let data = map.getLocation({
@@ -149,10 +145,10 @@ export default {
         let latitude = useMapStore().getCurrentLocatin.latitude
         let longitude = useMapStore().getCurrentLocatin.longitude
         console.log('当前位置经纬度', latitude, longitude)
-        this.getDistance(latitude, longitude, lat, lng)
+        this.getDistance(latitude, longitude, lat, lng, index)
       })
     },
-    getDistance(cLat, cLng, tLat, tLng) {
+    getDistance(cLat, cLng, tLat, tLng, index) {
       // 计算路径的实际距离
       // 当前位置 和 目标位置
       let currentLocation = new TMap.LatLng(cLat, cLng)
@@ -162,7 +158,9 @@ export default {
       // var infoDom = document.getElementById('info');
       // infoDom.innerText = `腾讯北京总部到圆明园的直线距离为${distance.toFixed(2)}米`;
       console.log('计算距离:', (distance / 1000).toFixed(2) + 'km')
-      this.distance = (distance / 1000).toFixed(2)
+      this.list[index].distance = (distance / 1000).toFixed(2)
+      // this.distance = (distance / 1000).toFixed(2)
+      return (distance / 1000).toFixed(2)
     },
     onLoad() {
       setTimeout(() => {
@@ -204,8 +202,20 @@ export default {
         } else {
           console.log('querySportsHalls', res.data.querySportsHalls)
           let hallList = res.data.querySportsHalls
-          this.newList = this.newList.concat(hallList)
-
+          // let thisDistance = 0
+          this.newList = hallList.map((item, index) => {
+            if (item.venuePhoto) {
+              item.venuePhoto = `${BASE_DOMAIN}/socketServer/images/cardMall/imgsrc/${item.venuePhoto}`
+            }
+            if (item.city && item.address) {
+              this.mapDistance(item.city, item.address, index)
+            }
+            return {
+              ...item,
+              distance: 0,
+            }
+          })
+          // this.newList = this.newList.concat(hallList)
           useHomeStore().setSportsHalls(this.newList)
           this.list = this.sportsHalls
 
