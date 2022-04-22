@@ -146,7 +146,7 @@ request.interceptors.response.use(
 
     // 如果rs=-1,提示msg
     if (res.data.rs === '-1') {
-      Toast('msg', res.data.msg)
+      Toast(res.data.msg)
     }
     return res
   },

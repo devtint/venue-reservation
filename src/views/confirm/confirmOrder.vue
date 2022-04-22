@@ -147,14 +147,9 @@
       </van-cell-group>
     </div>
 
-    <div style="height: 6rem"></div>
+    <!-- <div style="height: 6rem"></div> -->
     <div class="confirmOrderBox">
-      <van-submit-bar
-        :price="totalFee"
-        button-text="提交订单"
-        @submit="orderSubmit"
-        label="预计："
-      >
+      <van-submit-bar button-text="提交订单" @submit="orderSubmit">
       </van-submit-bar>
     </div>
 
@@ -282,7 +277,7 @@ export default {
     },
     orderSubmit() {
       // 时间段09:00-10:00 转为090000-100000
-      
+
       // let start = this.subscribeTimeSlot.split('-')[0]
       // let end = this.subscribeTimeSlot.split('-')[1]
       // start = start.split(':')[0] + start.split(':')[1] + '00'

@@ -202,7 +202,6 @@ export default {
         } else {
           console.log('querySportsHalls', res.data.querySportsHalls)
           let hallList = res.data.querySportsHalls
-          // let thisDistance = 0
           this.newList = hallList.map((item, index) => {
             if (item.venuePhoto) {
               item.venuePhoto = `${BASE_DOMAIN}/socketServer/images/cardMall/imgsrc/${item.venuePhoto}`

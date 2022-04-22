@@ -18,9 +18,10 @@
           </template>
           <template #text>
             <div class="text">
-              <div>
+              <div v-if="value.avaNum === '1'">
                 {{ value.prdPrice !== '' ? '￥' + value.prdPrice : '免费' }}
               </div>
+              <div v-else>已约满</div>
             </div>
           </template>
         </van-grid-item>
@@ -76,6 +77,14 @@ export default {
   mounted() {},
   methods: {
     selectItem(value) {
+      if (value.avaNum === '0') {
+        // 清除存储选择的时间段 pinia
+        useOrderStore().updateSubscribeTimeSlot('')
+        this.timeLists.forEach(item => {
+          item.selected = false
+        })
+        return
+      }
       console.log(value.timeSlot)
       // 存储选择的时间段 pinia
       useOrderStore().updateSubscribeTimeSlot(value.timeSlot)
