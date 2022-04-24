@@ -135,8 +135,37 @@ export default {
             }
           }
         })
+        // 今天的当前时间之前的时间段不可选择
+        this.formatTimeSlot(this.timeLists)
+
         console.log(this.timeLists)
       })
+    },
+    formatTimeSlot(list) {
+      let date = new Date()
+      // 格式化日期20220910
+      const year = date.getFullYear()
+      let month = date.getMonth() + 1
+      let day = date.getDate()
+      // 判断日期如果是一位数,前面补0
+      if (month < 10) {
+        month = `0${month}`
+      }
+      if (day < 10) {
+        day = `0${day}`
+      }
+      // 20220203
+      let currentDate = `${year}${month}${day}`
+      if (this.subscribeDate === currentDate) {
+        // 当前时间之前的时间段不可选择
+        let currentTime = date.getHours()
+        list.forEach(item => {
+          if (item.timeSlot.split(':')[0] < currentTime) {
+            item.selected = false
+            item.avaNum = '0'
+          }
+        })
+      }
     },
   },
 }
