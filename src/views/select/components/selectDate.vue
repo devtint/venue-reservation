@@ -161,6 +161,7 @@ export default {
     },
     siteConfirm(site) {
       this.site = site
+      console.log('siteConfirm',site)
       useAreaStore().setCurrentAreaSite(site)
       this.siteTitle = '重新选择场地'
       this.showPicker = false

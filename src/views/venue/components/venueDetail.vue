@@ -67,30 +67,29 @@ export default {
     navigation() {
       this.$toast('正在跳转导航...')
       // 根据地址获取经纬度
-      let region = this.currentSportHall.city
+      // let region = this.currentSportHall.city
       let address = this.currentSportHall.address
       // getLocation(region, address){
-        // let lat, lng
-        let map = new TMap.service.Geocoder()
-        let data = map.getLocation({
-          address: `${region}${address}`,
-          // region: region,
-        })
-        data.then(res => {
-          console.log(res)
-          console.log(res.result.location)
-          this.latitude = res.result.location.lat
-          this.longitude = res.result.location.lng
-          // this.latitude = useMapStore().getCurrentLocatin.latitude
-          // this.longitude = useMapStore().getCurrentLocatin.longitude
-          console.log('当前位置经纬度', this.latitude, this.longitude)
-          this.openMap()
-          // this.getDistance(this.latitude, this.longitude, lat, lng)
-        })
+      // let lat, lng
+      let map = new TMap.service.Geocoder()
+      let data = map.getLocation({
+        address: `${address}`,
+        // region: region,
+      })
+      data.then(res => {
+        console.log(res)
+        console.log(res.result.location)
+        this.latitude = res.result.location.lat
+        this.longitude = res.result.location.lng
+        // this.latitude = useMapStore().getCurrentLocatin.latitude
+        // this.longitude = useMapStore().getCurrentLocatin.longitude
+        console.log('当前位置经纬度', this.latitude, this.longitude)
+        this.openMap()
+        // this.getDistance(this.latitude, this.longitude, lat, lng)
+      })
       // }
-      
     },
-    openMap(){
+    openMap() {
       wx.openLocation({
         latitude: Number(this.latitude), // 纬度，浮点数，范围为90 ~ -90
         longitude: Number(this.longitude), // 经度，浮点数，范围为180 ~ -180。
@@ -107,7 +106,7 @@ export default {
           console.log(err)
         },
       })
-    }
+    },
   },
 }
 </script>

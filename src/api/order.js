@@ -12,6 +12,9 @@ import { request } from '@/utils'
 export const getVenueReservationPrice = data => {
   return request({
     method: 'POST',
+    headers: {
+      myType: 'application/json',
+    },
     url: '/insertRecReturn/btnCalcVenueReservationPrice',
     data,
   })
@@ -21,6 +24,9 @@ export const getVenueReservationPrice = data => {
 export const createSiteReservationOrder = data => {
   return request({
     method: 'POST',
+    headers: {
+      myType: 'application/json',
+    },
     url: '/insertRecReturn/btnSubmitSiteReservationOrder',
     data,
   })
@@ -85,5 +91,23 @@ export const getMyOrdersCancelled = params => {
     method: 'GET',
     url: '/search/queryMyCancelledOrdersBySport',
     params,
+  })
+}
+
+// (取消已付款订单)CGbtnCancelPaidOrder
+export const cancelTheOrderOfPayment = data => {
+  return request({
+    method: 'POST',
+    url: '/insertReturn/CGbtnCancelPaidOrder',
+    data,
+  })
+}
+
+// (取消未付款订单)CGbtnCancelUnPaidOrder
+export const cancelTheOrderOfUnPayment = data => {
+  return request({
+    method: 'POST',
+    url: '/insertReturn/CGbtnCancelUnPaidOrder',
+    data,
   })
 }

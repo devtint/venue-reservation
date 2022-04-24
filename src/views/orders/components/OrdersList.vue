@@ -38,7 +38,7 @@
                     }}</span
                   > -->
                   <span>{{
-                    item.payStatus === '3' ? '已支付' : '待付款'
+                    thisTab === '3' ? '已取消' : orderStatusShow(item)
                   }}</span>
                 </div>
                 <div class="orderInfo">
@@ -54,7 +54,7 @@
                     {{ item.siteUseBeginTime + '-' + item.siteUseEndTime }}
                   </p>
                   <p>订单金额 : ￥{{ item.totalPrice }}</p>
-                  <div class="orderBtn">
+                  <div class="orderBtn" v-if="thisTab !== '3'">
                     <template>
                       <van-button
                         class="navigation"
@@ -68,7 +68,7 @@
                         size="small"
                         color="#409eff"
                         @click="goPay(item)"
-                        v-if="item.payStatus !== '3'"
+                        v-if="item.payStatus === '0'"
                         >去支付</van-button
                       >
                       <van-button
@@ -76,7 +76,7 @@
                         size="small"
                         color="#a6a9ad"
                         @click="cancelOrder(item)"
-                        v-if="item.orderStatus !== '2'"
+                        v-if="item.status !== '7' && item.status !== '27'"
                         >取消订单</van-button
                       >
                     </template>
@@ -103,6 +103,8 @@ import {
   getMyOrders,
   getMyOrdersByPayStatus,
   getMyOrdersCancelled,
+  cancelTheOrderOfPayment,
+  cancelTheOrderOfUnPayment,
 } from '@/api/order'
 import { BASE_COMNAME } from '@/global/config'
 import wx from 'weixin-js-sdk'
@@ -156,6 +158,19 @@ export default {
     // this.onLoad()
   },
   methods: {
+    orderStatusShow(item) {
+      if (item.status === '7') {
+        return '已取消'
+      } else if (item.status === '27') {
+        return '已退款'
+      } else {
+        if (item.payStatus === '0') {
+          return '待付款'
+        } else if (item.payStatus === '3') {
+          return '已预约'
+        }
+      }
+    },
     onLoad() {
       console.log('onLoad')
       // 异步更新数据
@@ -218,7 +233,7 @@ export default {
     navigation(item) {
       this.$toast('正在跳转导航...')
       // 根据地址获取经纬度
-      let region = item.city
+      // let region = item.city
       let address = item.address
       let venueName = item.venueName
       // let region = '广州市'
@@ -226,7 +241,7 @@ export default {
       // let venueName = '天河体育中心体育场'
       let map = new TMap.service.Geocoder()
       let data = map.getLocation({
-        address: `${region}${address}`,
+        address: `${address}`,
         // region: region,
       })
       data.then(res => {
@@ -260,25 +275,17 @@ export default {
     },
     // 取消订单
     cancelOrder(item) {
-      // 格式化当前时间
-      let cancelDate = moment().format('YYYYMMDD')
-      let cancelTime = moment().format('HHmmss')
-      console.log('cancelDate', cancelDate)
-      console.log('cancelTime', cancelTime)
+      // srlIDForEngine:Splenwise微信预约点餐系统
+      // busiNameForEngine:运动场地出租业务
+      // busiFunNameForEngine:线上退场
+      // miniProcNameForEngine:完成线上退场
+      // billNo:14752204221141505722
       let params = {
         srlIDForEngine: 'Splenwise微信预约点餐系统',
-        busiNameForEngine: '汽车租赁业务',
-        busiFunNameForEngine: '取消租车订单',
-        miniProcNameForEngine: '取消租车订单',
-        saleCmpName: BASE_COMNAME,
-        driver: item.driver ? item.driver : '',
-        carSender: '',
-        carReceiver: '',
-        carID: item.carID ? item.carID : '',
+        busiNameForEngine: '运动场地出租业务',
+        busiFunNameForEngine: '线上退场',
+        miniProcNameForEngine: '完成线上退场',
         billNo: item.billNo,
-        cancelDate: cancelDate,
-        cancelTime: cancelTime,
-        remark: '',
       }
       console.log('取消订单参数', params)
       this.$dialog
@@ -287,14 +294,29 @@ export default {
           message: '确定取消订单吗？',
         })
         .then(() => {
-          setCancelOrder(params).then(res => {
-            if (res.data.rs === '1') {
-              this.onRefresh()
-              this.$toast('取消订单成功')
-            } else {
-              this.$toast(res.data.rs)
-            }
-          })
+          // 根据支付状态判断如何取消订单
+          if (item.payStatus === '0') {
+            // 未支付
+            params.miniProcNameForEngine = '取消未支付订单'
+            cancelTheOrderOfUnPayment(params).then(res => {
+              if (res.data.rs === '1') {
+                this.onRefresh()
+                this.$toast('取消订单成功')
+              } else {
+                this.$toast(res.data.rs)
+              }
+            })
+          } else if (item.payStatus === '3') {
+            // 已支付
+            cancelTheOrderOfPayment(params).then(res => {
+              if (res.data.rs === '1') {
+                this.onRefresh()
+                this.$toast('取消订单成功')
+              } else {
+                this.$toast(res.data.rs)
+              }
+            })
+          }
         })
     },
     loadAllOrder() {

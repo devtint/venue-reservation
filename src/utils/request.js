@@ -54,19 +54,19 @@ request.interceptors.request.use(
     // 如果是登录请求,那么执行完再执行其它接口请求
 
     // 如果是 post 请求,并且请求的数据是对象格式
-    // if (config.method === 'post' && config.data) {
-    //   // console.log('old config.data', config.data)
-    //   // 设置请求头 发送的数据是x-www-form-urlencoded 格式
-    //   config.headers['Content-Type'] = 'application/x-www-form-urlencoded'
-    //   // qs.stringify(object, [options]) 字符串化时，默认情况下，qs 对输出进行 URI 编码，以避免某些特殊字符对某些接口的调用造成请求失败。
-    //   //encode: false 禁用encode编码
-    //   config.data = qs.stringify(config.data, { encode: false })
-    //   // console.log('new config.data', config.data)
-    // }
-    // raw 格式
     if (config.method === 'post' && config.data) {
-      config.headers['Content-Type'] = 'application/json'
-      config.data = JSON.stringify(config.data)
+      if (config.headers['myType']) {
+        config.headers['Content-Type'] = config.headers['myType']
+        config.data = JSON.stringify(config.data)
+      } else {
+        // console.log('old config.data', config.data)
+        // 设置请求头 发送的数据是x-www-form-urlencoded 格式
+        config.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+        // qs.stringify(object, [options]) 字符串化时，默认情况下，qs 对输出进行 URI 编码，以避免某些特殊字符对某些接口的调用造成请求失败。
+        //encode: false 禁用encode编码
+        config.data = qs.stringify(config.data, { encode: false })
+        // console.log('new config.data', config.data)
+      }
     }
     // 取到本地存储中的用户信息 getItem
     // 再还原成 JSON格式，就可用点方法调用

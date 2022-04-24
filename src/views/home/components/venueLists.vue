@@ -110,7 +110,7 @@ export default {
       console.log('initLocation:::')
     },
     // 计算到每个场馆的距离
-    mapDistance(region, address, index) {
+    mapDistance(address, index) {
       wx.ready(() => {
         wx.getLocation({
           type: 'gcj02', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
@@ -124,17 +124,17 @@ export default {
               latitude,
               longitude,
             })
-            this.getLocation(region, address, index)
+            this.getLocation(address, index)
           },
         })
       })
     },
     // 根据地址获取经纬度
-    getLocation(region, address, index) {
+    getLocation(address, index) {
       let lat, lng
       let map = new TMap.service.Geocoder()
       let data = map.getLocation({
-        address: `${region}${address}`,
+        address: `${address}`,
         // region: region,
       })
       data.then(res => {
@@ -206,8 +206,8 @@ export default {
             if (item.venuePhoto) {
               item.venuePhoto = `${BASE_DOMAIN}/socketServer/images/cardMall/imgsrc/${item.venuePhoto}`
             }
-            if (item.city && item.address) {
-              this.mapDistance(item.city, item.address, index)
+            if (item.address) {
+              this.mapDistance(item.address, index)
             }
             return {
               ...item,
