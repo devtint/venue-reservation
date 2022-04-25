@@ -51,7 +51,11 @@
                   <p>预约日期 : {{ item.siteUseDateBegin }}</p>
                   <p>
                     预约时间 :
-                    {{ item.siteUseBeginTime + '-' + item.siteUseEndTime }}
+                    {{
+                      formatDate(item.siteUseBeginTime) +
+                      '-' +
+                      formatDate(item.siteUseEndTime)
+                    }}
                   </p>
                   <p>订单金额 : ￥{{ item.totalPrice }}</p>
                   <div class="orderBtn" v-if="thisTab !== '3'">
@@ -68,7 +72,7 @@
                         size="small"
                         color="#409eff"
                         @click="goPay(item)"
-                        v-if="item.payStatus === '0'"
+                        v-if="item.payStatus === '0' && item.status !== '7' && item.status !== '27'"
                         >去支付</van-button
                       >
                       <van-button
@@ -110,6 +114,7 @@ import { BASE_COMNAME } from '@/global/config'
 import wx from 'weixin-js-sdk'
 
 import { useOrderStore } from '@/store/order'
+import { useHomeStore } from '@/store/home'
 
 import MobilePay from '@/components/MobilePay.vue'
 // import moment from 'moment'
@@ -144,6 +149,9 @@ export default {
       }
       return item
     },
+    sportsHalls() {
+      return useHomeStore().getSportsHalls
+    },
   },
   watch: {
     $router() {
@@ -158,6 +166,15 @@ export default {
     // this.onLoad()
   },
   methods: {
+    // 预约时间格式化
+    formatDate(date) {
+      // 如果有:则不进行格式化
+      if (date.indexOf(':') > -1) {
+        return date
+      } else {
+        return date.replace(/^(\d{2})(\d{2})(\d{2})$/, '$1:$2')
+      }
+    },
     orderStatusShow(item) {
       if (item.status === '7') {
         return '已取消'
@@ -232,13 +249,16 @@ export default {
     // 导航
     navigation(item) {
       this.$toast('正在跳转导航...')
+      let address = ''
+      // 获取this.sportsHalls的地址
+      this.sportsHalls.forEach(element => {
+        if (element.venueName === item.venueName) {
+          address = element.address
+        }
+      })
       // 根据地址获取经纬度
       // let region = item.city
-      let address = item.address
       let venueName = item.venueName
-      // let region = '广州市'
-      // let address = '天河路299号'
-      // let venueName = '天河体育中心体育场'
       let map = new TMap.service.Geocoder()
       let data = map.getLocation({
         address: `${address}`,

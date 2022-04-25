@@ -7,7 +7,7 @@
       <van-grid :column-num="3" :gutter="10" clickable>
         <van-grid-item
           v-for="(value, index) in timeLists"
-          :class="{ selected: value.selected, disabled: value.avaNum === '0' }"
+          :class="{ selected: value.selected, disabled: value.avaNum === '0' || value.avaNum === '2' }"
           :key="index"
           @click="selectItem(value)"
         >
@@ -18,7 +18,7 @@
           </template>
           <template #text>
             <div class="text">
-              <div v-if="value.avaNum === '1'">
+              <div v-if="value.avaNum === '1' || value.avaNum === '2'">
                 {{ value.prdPrice !== '' ? '￥' + value.prdPrice : '免费' }}
               </div>
               <div v-else>已约满</div>
@@ -162,7 +162,7 @@ export default {
         list.forEach(item => {
           if (item.timeSlot.split(':')[0] < currentTime) {
             item.selected = false
-            item.avaNum = '0'
+            item.avaNum = '2'
           }
         })
       }
