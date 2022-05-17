@@ -59,41 +59,45 @@
       </van-cell-group>
     </div>
 
-    <!-- <div class="lesseeInfo">
+    <div class="lesseeInfo">
       <van-cell-group inset>
         <van-cell title-class="lesseeTitle">
           <template #title>
-            <div>
+            <div class="contactsTitle">
               <span><i class="verticalLine"></i> 联系信息</span>
+              <van-button round v-if="isSave === true" @click="clearUserInfo"
+                >修改</van-button
+              >
             </div>
           </template>
         </van-cell>
         <van-cell>
-          <template #title>
-            <div>
-              <span><van-icon size="1rem" name="friends-o" /> 联系人：</span>
-            </div>
-          </template>
           <template>
-            <div>
-              <div>张三</div>
-            </div>
-          </template>
-        </van-cell>
-        <van-cell>
-          <template #title>
-            <div>
-              <span><van-icon size="1rem" name="phone-o" /> 联系电话：</span>
-            </div>
-          </template>
-          <template>
-            <div>
-              <div>13888888888</div>
-            </div>
+            <van-form @submit="userSubmit">
+              <van-field
+                v-model="userName"
+                label="联系人"
+                :readonly="isReadonly"
+                placeholder="请输入联系人姓名"
+              />
+              <van-field
+                v-model="userPhone"
+                label="电话"
+                :readonly="isReadonly"
+                type="tel"
+                placeholder="请输入联系电话"
+                :rules="[{ pattern, message: '手机号码格式有误!' }]"
+              />
+              <div style="margin: 16px" v-if="isSave === false">
+                <van-button round block type="info" native-type="submit"
+                  >保存</van-button
+                >
+              </div>
+            </van-form>
           </template>
         </van-cell>
       </van-cell-group>
-    </div> -->
+    </div>
     <div class="payMethod">
       <van-cell-group inset>
         <van-cell title-class="payTitle">
@@ -177,9 +181,14 @@ export default {
   props: {},
   data() {
     return {
+      isSave: true,
+      isReadonly: false,
+      userName: '',
+      userPhone: '',
       payChecked: true,
       orderSuccessShow: false,
       totalFee: 0,
+      pattern: /^1[3456789]\d{9}$/,
     }
   },
   computed: {
@@ -213,10 +222,68 @@ export default {
     console.log('subscribeDate:', this.subscribeDate)
     console.log('subscribeTimeSlot:', this.subscribeTimeSlot)
 
+    this.getCookie()
     this.getOrderPrice()
   },
   mounted() {},
   methods: {
+    clearUserInfo() {
+      this.isReadonly = false
+      this.isSave = false
+      this.userName = ''
+      this.userPhone = ''
+      this.clearCookie()
+    },
+    userSubmit(e) {
+      console.log('userSubmit:', e)
+      this.setCookie(this.userName, this.userPhone, 365)
+      this.isReadonly = true
+      this.isSave = true
+    },
+    setCookie(userName, userPhone, exdays) {
+      var exdate = new Date() //获取时间
+      exdate.setTime(exdate.getTime() + 24 * 60 * 60 * 1000 * exdays) //保存的天数
+      //字符串拼接cookie
+      window.document.cookie =
+        'contacts' + '=' + userName + ';path=/;expires=' + exdate.toGMTString()
+      window.document.cookie =
+        'contactsPhone' +
+        '=' +
+        userPhone +
+        ';path=/;expires=' +
+        exdate.toGMTString()
+
+      this.isSave = false
+    },
+    //读取cookie
+    getCookie() {
+      console.log('getCookie')
+      if (document.cookie.length > 0) {
+        var arr = document.cookie.split('; ') //这里显示的格式需要切割一下自己可输出看下
+        for (var i = 0; i < arr.length; i++) {
+          var arr2 = arr[i].split('=') //再次切割
+          //判断查找相对应的值
+          if (arr2[0] == 'contacts') {
+            this.userName = arr2[1] //保存到保存数据的地方
+          } else if (arr2[0] == 'contactsPhone') {
+            this.userPhone = arr2[1]
+          }
+        }
+      }
+      if (this.userName && this.userPhone) {
+        this.isSave = true
+        this.isReadonly = true
+      } else {
+        this.isSave = false
+        this.isReadonly = false
+      }
+      console.log(this.userName)
+      console.log(this.userPhone)
+    },
+    //清除cookie
+    clearCookie() {
+      this.setCookie('', '', -1)
+    },
     // 跳转到规则页面
     toRules() {
       this.$router.push('/rules')
@@ -291,6 +358,8 @@ export default {
           productName: this.currentArea.siteType + '出租',
           srlID: this.currentArea.venueName,
           remark: '',
+          receiverName: this.userName ? this.userName : '',
+          mobile: this.userPhone ? this.userPhone : '',
         },
         recList: [
           {
@@ -424,5 +493,10 @@ export default {
 .payTitle {
   font-weight: 600;
   color: #565656;
+}
+.contactsTitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>

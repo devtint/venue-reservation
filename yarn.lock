@@ -1269,6 +1269,11 @@
     "anymatch" "^3.0.0"
     "source-map" "^0.6.0"
 
+"@vant/area-data@^1.2.4":
+  "integrity" "sha512-oowT5fePKdPR4DShoLnXejcXtW323JhtbJreOpFRBP2sNc/krgDe5W1BBCJg+frKet7x7cd0d8pA7xR3Vv9PLQ=="
+  "resolved" "https://registry.npmmirror.com/@vant/area-data/-/area-data-1.2.4.tgz"
+  "version" "1.2.4"
+
 "@vant/icons@^1.7.1":
   "integrity" "sha512-tW4EqzxN4kXw1rnlnQJQHofEifPbt/gECOWiibomht8QLyvoGuE4iUmDFS288dJ07ZjuTy0bhdABj0SENo2fmQ=="
   "resolved" "https://registry.npmjs.org/@vant/icons/-/icons-1.7.3.tgz"

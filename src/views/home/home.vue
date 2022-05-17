@@ -177,10 +177,10 @@ export default {
           global_.TELLERCOMPANY = res.data.TELLERCOMPANY
           appid = res.data.appid
           /* --当刷新页面导致token不存在时,使用sessionStorage中的token-- */
-          storage.setItem('token', global_.token)
-          storage.setItem('openid', global_.openid)
-          storage.setItem('guestMemberID', global_.userName)
-          storage.setItem('appid', appid)
+          storage.setItem('token', res.data.token.token)
+          storage.setItem('openid', res.data.openid)
+          storage.setItem('guestMemberID', res.data.userName)
+          storage.setItem('appid', res.data.appid)
           storage.setItem('TELLERCOMPANY', res.data.TELLERCOMPANY)
           storage.setItem('user', JSON.stringify(res.data))
           storage.setItem('userName', res.data.nickname)
