@@ -1,11 +1,17 @@
 <template>
   <div class="home">
     <div class="home-header">
-      <van-nav-bar left-text="惠保投资">
-        <template #right>
+      <van-nav-bar>
+        <template #left>
           <!-- 定位 -->
           <div class="home-header-location">
             当前位置： <a class="city">{{ currentCity }}</a>
+          </div>
+        </template>
+        <template #right>
+          <!-- 扫一扫 -->
+          <div class="home-header-scan" @click="scanMain">
+            <van-icon name="scan" color="#fed17e" size="1.2rem" /> 扫一扫
           </div>
         </template>
       </van-nav-bar>
@@ -98,6 +104,31 @@ export default {
     })
   },
   methods: {
+    scanMain() {
+      console.log('扫一扫')
+      wx.scanQRCode({
+        needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+        scanType: ['qrCode', 'barCode'], // 可以指定扫二维码还是一维码，默认二者都有
+        success: res => {
+          var result = res.resultStr // 当needResult 为 1 时，扫码返回的结果
+          console.log('扫码结果', result)
+          // 分号分割
+          let resultArr = result.split(';')
+          let srlID = resultArr[0]
+          let venueID = resultArr[1]
+          console.log('srlID', srlID)
+          console.log('venueID', venueID)
+          this.$router.push({
+            name: 'scanPay',
+            params: {
+              srlID: srlID,
+              venueID: venueID,
+              result: result,
+            },
+          })
+        },
+      })
+    },
     loadSilenceLogin() {
       console.log('login:::')
       // this.dataLoading = true
@@ -206,4 +237,8 @@ export default {
 }
 </script>
 
-<style scoped lang="less"></style>
+<style scoped lang="less">
+.home-header-scan {
+  font-size: 1rem;
+}
+</style>

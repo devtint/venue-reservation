@@ -111,3 +111,21 @@ export const cancelTheOrderOfUnPayment = data => {
     data,
   })
 }
+
+// (查询线下活动信息-指定场馆)queryOfflineActInforByVenue
+export const queryVenueInfo = params => {
+  return request({
+    method: 'GET',
+    url: '/search/queryOfflineActInforByVenue',
+    params,
+  })
+}
+
+// (创建租场线下订单)ZCbtnCreateOfflineOrder
+export const createOfflineOrder = data => {
+  return request({
+    method: 'POST',
+    url: '/insertReturn/ZCbtnCreateOfflineOrder',
+    data,
+  })
+}

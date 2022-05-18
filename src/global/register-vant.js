@@ -39,7 +39,6 @@ import {
   GoodsActionButton,
   List,
   PullRefresh,
-  NumberKeyboard,
   ContactCard,
   NoticeBar,
   ContactList,
@@ -53,6 +52,8 @@ import {
   Search,
   ActionSheet,
   CountDown,
+  PasswordInput,
+  NumberKeyboard,
 } from 'vant'
 
 const components = [
@@ -95,7 +96,6 @@ const components = [
   GoodsActionButton,
   List,
   PullRefresh,
-  NumberKeyboard,
   ContactCard,
   NoticeBar,
   ContactList,
@@ -109,6 +109,8 @@ const components = [
   Search,
   ActionSheet,
   CountDown,
+  PasswordInput,
+  NumberKeyboard,
 ]
 
 function install(Vue) {

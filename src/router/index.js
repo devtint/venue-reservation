@@ -14,6 +14,11 @@ const routes = [
     component: () => import('@/views/register/register.vue'),
   },
   {
+    path: '/scanPay',
+    name: 'scanPay',
+    component: () => import('@/components/scanPay.vue'),
+  },
+  {
     path: '/',
     // name: 'Layout',
     // route level code-splitting
