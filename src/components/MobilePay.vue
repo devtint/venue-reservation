@@ -50,10 +50,6 @@ export default {
   name: 'weChatPay',
   components: {},
   props: {
-    // show: {
-    //   type: Boolean,
-    //   default: false,
-    // },
   },
   data() {
     return {
@@ -66,7 +62,7 @@ export default {
       mch_id: '',
       paySsn: '',
       // 收款方
-      payeeName: window.localStorage.getItem('REALUSERNAME'),
+      payeeName: '',
       isDisabled: true,
     }
   },
@@ -88,7 +84,8 @@ export default {
   },
   mounted() {},
   methods: {
-    showPopup() {
+    showPopup(payeeName) {
+      this.payeeName = payeeName
       this.show = true
       this.loadPayTools()
     },
@@ -111,7 +108,7 @@ export default {
 
         //获取微信的支付方式
         const weChatPay = res.data.queryPayTools.filter(item => {
-          return item.payToolNum === 'weixin'
+          return item.payer === '微信支付'
         })
         // 获取订单信息
         console.log(this.orderInfo)

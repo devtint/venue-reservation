@@ -169,8 +169,11 @@ Vue.prototype.regSchool = function (schoolName) {
 Vue.prototype.wxConfig = function () {
   // var url = encodeURIComponent(location.href.split('#')[0])
   var url = location.href.split('#')[0]
+  // let newUrl = url.replace('paytunnel', 'gxgscloud')
+  // console.log('wxConfig url:', newUrl)
   getJSSDKSignature({
     url: url,
+    // url: newUrl,
   })
     .then(res => {
       let appId = res.data.appId

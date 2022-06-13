@@ -167,7 +167,7 @@ export default {
 
         //获取微信的支付方式
         const weChatPay = res.data.queryPayTools.filter(item => {
-          return item.payToolNum === 'weixin'
+          return item.payer === '微信支付'
         })
         // 获取订单信息
         // console.log(this.orderInfo)

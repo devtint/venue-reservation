@@ -386,7 +386,12 @@ export default {
           // this.$toast('下单成功')
 
           // 下单成功界面
-          this.$router.push('/over')
+          this.$router.push({
+            path: '/over',
+            query: {
+              payeeName: this.currentSportHall.venueName,
+            },
+          })
           // this.orderSuccessShow = true
         } else {
           this.$toast(res.data.rs)

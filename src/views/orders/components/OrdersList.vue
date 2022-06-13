@@ -409,7 +409,7 @@ export default {
       }
       useOrderStore().updateOrderInfo(orderInfo)
       // console.log('goPay',this.$refs.orderPayShow)
-      this.$refs.mobilePayShow.showPopup()
+      this.$refs.mobilePayShow.showPopup(item.venueName)
       // this.mobilePayShow = true
     },
   },

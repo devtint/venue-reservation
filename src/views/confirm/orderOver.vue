@@ -75,7 +75,8 @@ export default {
       this.$router.push('/orders')
     },
     goPay() {
-      this.$refs.mobilePayShow.showPopup()
+      let value = this.$route.query.payeeName
+      this.$refs.mobilePayShow.showPopup(value)
     },
   },
 }

@@ -30,6 +30,10 @@ if (process.env.NODE_ENV === 'development') {
   BASE_URL = 'http://www.paytunnel.cn/venueReservationServerRH'
   BASE_DOMAIN = 'http://www.paytunnel.cn'
   BASE_COMNAME = '广州睿颢软件技术有限公司'
+
+  // 生产环境
+  // BASE_URL = 'http://www.gxgscloud.cn/carRentalServerRH'
+  // BASE_DOMAIN = 'http://www.gxgscloud.cn'
 } else {
   BASE_URL = 'http://www.paytunnel.cn/carRentalServerRH'
   BASE_DOMAIN = 'http://www.paytunnel.cn'
