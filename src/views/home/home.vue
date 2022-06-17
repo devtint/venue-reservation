@@ -82,6 +82,7 @@ export default {
           success: res => {
             let latitude = res.latitude // 纬度，浮点数，范围为90 ~ -90
             let longitude = res.longitude // 经度，浮点数，范围为180 ~ -180。
+            console.log('wx getLocation:', latitude)
             // let speed = res.speed // 速度，以米/每秒计
             // let accuracy = res.accuracy // 位置精度
             // 通过获取的经纬度获取地址-城市(city) 使用腾讯地图API
@@ -99,6 +100,9 @@ export default {
               console.log('当前城市this.currentCity', this.currentCity)
             })
           },
+          fail: res => {
+            console.log('err res:', res)
+          },
         })
       })
     })
@@ -113,15 +117,16 @@ export default {
           var result = res.resultStr // 当needResult 为 1 时，扫码返回的结果
           console.log('扫码结果', result)
           // 分号分割
-          let resultArr = result.split(';')
-          let srlID = resultArr[0]
-          let venueID = resultArr[1]
-          console.log('srlID', srlID)
+          // let resultArr = result.split(';')
+          // let srlID = resultArr[0]
+          // let venueID = resultArr[1]
+          let venueID = result
+          // console.log('srlID', srlID)
           console.log('venueID', venueID)
           this.$router.push({
             name: 'scanPay',
             params: {
-              srlID: srlID,
+              // srlID: srlID,
               venueID: venueID,
               result: result,
             },

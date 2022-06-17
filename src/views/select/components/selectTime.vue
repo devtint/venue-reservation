@@ -138,7 +138,10 @@ export default {
         // 今天的当前时间之前的时间段不可选择
         this.formatTimeSlot(this.timeLists)
 
-        console.log(this.timeLists)
+        console.log('this.timeLists:',this.timeLists)
+        console.log('querySportsSiteInfor:',res.data.querySportsSiteInfor[0].saleCmpName)
+        // 存储saleCmpName
+        window.localStorage.setItem('saleCmpName',res.data.querySportsSiteInfor[0].saleCmpName)
       })
     },
     formatTimeSlot(list) {

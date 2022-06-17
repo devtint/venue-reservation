@@ -318,7 +318,7 @@ export default {
         recName: {
           transDate: this.subscribeDate,
           actNo: this.currentArea.actNo,
-          saleCmpName: window.localStorage.getItem('REALUSERNAME'),
+          saleCmpName: window.localStorage.getItem('saleCmpName'),
           productName: this.currentArea.siteType + '出租',
           srlID: this.currentArea.venueName,
           remark: '',
@@ -354,7 +354,7 @@ export default {
         recName: {
           transDate: this.subscribeDate,
           actNo: this.currentArea.actNo,
-          saleCmpName: window.localStorage.getItem('REALUSERNAME'),
+          saleCmpName: window.localStorage.getItem('saleCmpName'),
           productName: this.currentArea.siteType + '出租',
           srlID: this.currentArea.venueName,
           remark: '',

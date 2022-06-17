@@ -74,14 +74,13 @@ export default {
     toastLoading(flag) {
       if (flag === 'show') {
         const toast = this.$toast.loading({
-        duration: 0, // 持续展示 toast
-        forbidClick: true,
-        message: '请求支付中...',
-      })
+          duration: 0, // 持续展示 toast
+          forbidClick: true,
+          message: '请求支付中...',
+        })
       } else {
         this.$toast.clear()
       }
-      
     },
     goIndex() {
       console.log('goIndex')
@@ -132,8 +131,9 @@ export default {
         totalAmount: this.payMoney,
         venueNo: this.venueNo,
         prdNo: this.prdNo,
+        // TELLERCOMPANY: window.localStorage.getItem('REALUSERNAME'),
         TELLERCOMPANY: '广州睿颢软件技术有限公司',
-        REALUSERNAME: '广州睿颢软件技术有限公司',
+        REALUSERNAME: window.localStorage.getItem('REALUSERNAME'),
         REALTERMTYPE: '微信预约点餐公众号',
         TERMID: '桂林科友微信预约点餐WEB端服务系统',
       }
@@ -192,7 +192,6 @@ export default {
         let payData = res.data
         this.paySsn = payData.paySsn
 
-
         this.toastLoading('end')
         let wxPayData = {
           paySsn: payData.paySsn,
@@ -214,7 +213,7 @@ export default {
           if (res.status === 200) {
             console.log('getWxPay', res.data)
             this.wxPayData = res.data
-            
+
             // 微信支付
             this.weChatPay()
             // this.isDisabled = false
