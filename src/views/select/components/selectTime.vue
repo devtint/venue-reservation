@@ -7,7 +7,10 @@
       <van-grid :column-num="3" :gutter="10" clickable>
         <van-grid-item
           v-for="(value, index) in timeLists"
-          :class="{ selected: value.selected, disabled: value.avaNum === '0' || value.avaNum === '2' }"
+          :class="{
+            selected: value.selected,
+            disabled: value.avaNum === '0' || value.avaNum === '2',
+          }"
           :key="index"
           @click="selectItem(value)"
         >
@@ -77,7 +80,7 @@ export default {
   mounted() {},
   methods: {
     selectItem(value) {
-      if (value.avaNum === '0') {
+      if (value.avaNum === '0' || value.avaNum === '2') {
         // 清除存储选择的时间段 pinia
         useOrderStore().updateSubscribeTimeSlot('')
         this.timeLists.forEach(item => {
@@ -138,10 +141,16 @@ export default {
         // 今天的当前时间之前的时间段不可选择
         this.formatTimeSlot(this.timeLists)
 
-        console.log('this.timeLists:',this.timeLists)
-        console.log('querySportsSiteInfor:',res.data.querySportsSiteInfor[0].saleCmpName)
+        console.log('this.timeLists:', this.timeLists)
+        console.log(
+          'querySportsSiteInfor:',
+          res.data.querySportsSiteInfor[0].saleCmpName
+        )
         // 存储saleCmpName
-        window.localStorage.setItem('saleCmpName',res.data.querySportsSiteInfor[0].saleCmpName)
+        window.localStorage.setItem(
+          'saleCmpName',
+          res.data.querySportsSiteInfor[0].saleCmpName
+        )
       })
     },
     formatTimeSlot(list) {
