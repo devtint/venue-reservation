@@ -76,17 +76,22 @@
             <van-form @submit="userSubmit">
               <van-field
                 v-model="userName"
+                required
                 label="联系人"
                 :readonly="isReadonly"
                 placeholder="请输入联系人姓名"
+                :rules="[{ required: true, message: '请输入联系人姓名' }]"
               />
               <van-field
                 v-model="userPhone"
+                required
                 label="电话"
                 :readonly="isReadonly"
                 type="tel"
                 placeholder="请输入联系电话"
-                :rules="[{ pattern, message: '手机号码格式有误!' }]"
+                :rules="[
+                  { pattern, required: true, message: '手机号码格式有误!' },
+                ]"
               />
               <div style="margin: 16px" v-if="isSave === false">
                 <van-button round block type="info" native-type="submit"
@@ -343,6 +348,14 @@ export default {
       })
     },
     orderSubmit() {
+      if (this.userName && this.userPhone) {
+        this.setCookie(this.userName, this.userPhone, 365)
+        this.isReadonly = true
+        this.isSave = true
+      } else {
+        this.$toast('请填写联系人信息')
+        return
+      }
       // 时间段09:00-10:00 转为090000-100000
 
       // let start = this.subscribeTimeSlot.split('-')[0]
@@ -380,6 +393,7 @@ export default {
           let orderInfo = {
             billNo: rsInfo.billNo,
             totalAmt: rsInfo.totalAmt,
+            venueName: this.currentSportHall.venueName,
           }
           useOrderStore().updateOrderInfo(orderInfo)
           // 提示下单成功
@@ -503,5 +517,8 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.costDescription {
+  margin-bottom: 5rem;
 }
 </style>
