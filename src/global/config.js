@@ -16,6 +16,7 @@
 let BASE_URL = ''
 let BASE_DOMAIN = ''
 let BASE_COMNAME = ''
+let BASE_TO_HREF = ''
 const TIME_OUT = 10000
 
 console.log('process.env.NODE_ENV', process.env.NODE_ENV)
@@ -26,14 +27,15 @@ if (process.env.NODE_ENV === 'development') {
   BASE_DOMAIN = 'http://www.paytunnel.cn'
   BASE_COMNAME = '广州睿颢软件技术有限公司'
 } else if (process.env.NODE_ENV === 'production') {
-  // BASE_URL = 'http://www.paytunnel.cn/carRentalServerRH'
   BASE_URL = 'http://www.paytunnel.cn/venueReservationServerRH'
   BASE_DOMAIN = 'http://www.paytunnel.cn'
-  BASE_COMNAME = '广州睿颢软件技术有限公司'
+  BASE_TO_HREF = 'http://www.paytunnel.cn/venueReservationAdmin'
+  // BASE_COMNAME = '广州睿颢软件技术有限公司'
 
   // 生产环境
-  // BASE_URL = 'http://www.gxgscloud.cn/carRentalServerRH'
+  // BASE_URL = 'http://www.gxgscloud.cn/venueReservationServerRH'
   // BASE_DOMAIN = 'http://www.gxgscloud.cn'
+  // BASE_TO_HREF = 'http://www.gxgscloud.cn/venueReservationAdmin'
 } else {
   BASE_URL = 'http://www.paytunnel.cn/carRentalServerRH'
   BASE_DOMAIN = 'http://www.paytunnel.cn'
@@ -42,4 +44,4 @@ if (process.env.NODE_ENV === 'development') {
 
 console.log('BASE_URL', BASE_URL)
 
-export { BASE_URL, BASE_DOMAIN, BASE_COMNAME, TIME_OUT }
+export { BASE_URL, BASE_DOMAIN, BASE_COMNAME, BASE_TO_HREF, TIME_OUT }

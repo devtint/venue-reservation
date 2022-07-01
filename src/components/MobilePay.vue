@@ -42,15 +42,20 @@
 </template>
 
 <script>
-import { getPayTools, getPaySsnByBillNo, getWxPay, setPayed } from '@/api/order'
+import {
+  getPayTools,
+  getPaySsnByBillNo,
+  getWxPay,
+  setPayed,
+  sendSMSNotice,
+} from '@/api/order'
 import { useOrderStore } from '@/store/order'
 
 import wx from 'weixin-js-sdk'
 export default {
   name: 'weChatPay',
   components: {},
-  props: {
-  },
+  props: {},
   data() {
     return {
       show: false,
@@ -111,7 +116,7 @@ export default {
           return item.payer === '微信支付'
         })
         // 获取订单信息
-        console.log(this.orderInfo)
+        console.log('this.orderInfo:', this.orderInfo)
         let billNo = this.orderInfo.billNo
         let price = this.orderInfo.totalAmt
         this.payInfo = {
@@ -141,7 +146,7 @@ export default {
           payer: this.payInfo.payer,
           paidAmtEBag: '0',
           billNo: payData.billNo,
-          goodsName: '场地预约',
+          goodsName: this.orderInfo.venueName,
           number: '1',
           appid: payData.appid,
           mch_id: payData.mch_id,
@@ -190,7 +195,7 @@ export default {
               price: this.payInfo.reqPaidAmt,
               billNo: this.payInfo.billNo,
               payer: this.payInfo.payer,
-              goodsName: '场地预约',
+              goodsName: this.orderInfo.venueName,
               sub_mch_id: '',
               mch_id: this.wxPayData.mch_id,
             }
@@ -199,6 +204,7 @@ export default {
               console.log('payed', res)
               if (res.data.rs === '1') {
                 console.log('支付成功')
+                this.sendSMS()
                 this.$router.push('/orders')
                 // this.paySuccess()
                 // this.$toast('支付成功')
@@ -221,6 +227,25 @@ export default {
         this.onBridgeReady()
         this.show = false
       }
+    },
+    sendSMS() {
+      sendSMSNotice({
+        srlIDForEngine: 'Splenwise微信预约点餐系统',
+        busiNameForEngine: '运动场地出租业务',
+        busiFunNameForEngine: '线上订场',
+        miniProcNameForEngine: '支付成功发送短信通知',
+        billNo: this.orderInfo.billNo,
+        saleCmpName: this.orderInfo.venueName,
+      }).then(res => {
+        console.log('sendSMSNotice', res)
+        if (res.data.rs === '1') {
+          console.log('发送短信成功')
+          this.$toast('预约成功,已短信通知管理员')
+        } else {
+          console.log('发送短信失败')
+          this.$toast('发送短信失败:', res.data.rs)
+        }
+      })
     },
   },
 }

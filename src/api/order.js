@@ -129,3 +129,12 @@ export const createOfflineOrder = data => {
     data,
   })
 }
+
+// (订场成功发送短信通知)btnBookingSuccSendSMSNotice
+export const sendSMSNotice = data => {
+  return request({
+    method: 'POST',
+    url: '/insertReturn/btnBookingSuccSendSMSNotice',
+    data,
+  })
+}

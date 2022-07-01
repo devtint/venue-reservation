@@ -72,7 +72,11 @@
                         size="small"
                         color="#409eff"
                         @click="goPay(item)"
-                        v-if="item.payStatus === '0' && item.status !== '7' && item.status !== '27'"
+                        v-if="
+                          item.payStatus === '0' &&
+                          item.status !== '7' &&
+                          item.status !== '27'
+                        "
                         >去支付</van-button
                       >
                       <van-button
@@ -110,7 +114,7 @@ import {
   cancelTheOrderOfPayment,
   cancelTheOrderOfUnPayment,
 } from '@/api/order'
-import { BASE_COMNAME } from '@/global/config'
+// import { BASE_COMNAME } from '@/global/config'
 import wx from 'weixin-js-sdk'
 
 import { useOrderStore } from '@/store/order'
@@ -307,7 +311,6 @@ export default {
         miniProcNameForEngine: '完成线上退场',
         billNo: item.billNo,
       }
-      console.log('取消订单参数', params)
       this.$dialog
         .confirm({
           title: '提示',
@@ -318,6 +321,7 @@ export default {
           if (item.payStatus === '0') {
             // 未支付
             params.miniProcNameForEngine = '取消未支付订单'
+            console.log('取消未支付订单参数', params)
             cancelTheOrderOfUnPayment(params).then(res => {
               if (res.data.rs === '1') {
                 this.onRefresh()
@@ -328,6 +332,8 @@ export default {
             })
           } else if (item.payStatus === '3') {
             // 已支付
+            params.venueName = item.venueName
+            console.log('取消已支付订单参数', params)
             cancelTheOrderOfPayment(params).then(res => {
               if (res.data.rs === '1') {
                 this.onRefresh()
@@ -406,6 +412,7 @@ export default {
       let orderInfo = {
         billNo: item.billNo,
         totalAmt: item.totalPrice,
+        venueName: item.venueName,
       }
       useOrderStore().updateOrderInfo(orderInfo)
       // console.log('goPay',this.$refs.orderPayShow)

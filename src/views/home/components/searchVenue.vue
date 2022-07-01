@@ -41,7 +41,7 @@ export default {
           return
         }
         console.log(res.data.querySportsHallsBySearch)
-        useHomeStore().setSportsHalls(res.data.querySportsHallsBySearch)
+        useHomeStore().setSportsHallsOfSearch(res.data.querySportsHallsBySearch)
       })
     },
   },

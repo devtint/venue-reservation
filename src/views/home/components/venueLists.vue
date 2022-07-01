@@ -9,6 +9,8 @@
           v-model="loading"
           :finished="finished"
           finished-text="没有更多了"
+          :error.sync="error"
+          error-text="请求失败，点击重新加载"
           @load="onLoad"
         >
           <van-cell-group inset>
@@ -72,6 +74,7 @@ import wx from 'weixin-js-sdk'
 import { useHomeStore } from '@/store/home'
 import { useMapStore } from '@/store/map'
 import { BASE_DOMAIN } from '@/global/config'
+
 // import { TMap } from '@/api/map'
 export default {
   name: 'venueLists',
@@ -81,6 +84,7 @@ export default {
     return {
       list: [],
       newList: [],
+      error: false,
       loading: false,
       finished: false,
       refreshing: false,
@@ -93,11 +97,20 @@ export default {
     sportsHalls() {
       return useHomeStore().getSportsHalls
     },
+    sportsHallsOfSearch() {
+      return useHomeStore().getSportsHallsOfSearch
+    },
   },
   watch: {
-    sportsHalls(newValue, oldValue) {
+    sportsHallsOfSearch(newValue, oldValue) {
       console.log('newValue', newValue)
-      this.list = newValue
+      // this.list = newValue
+      if (newValue.length !== 0) {
+        this.list = this.handleLists(newValue)
+      }
+      // this.newList = this.newList.concat(hallList)
+      // useHomeStore().setSportsHalls(this.newList)
+      // this.list = this.sportsHalls
     },
   },
   created() {
@@ -199,24 +212,27 @@ export default {
       getSportsHalls().then(res => {
         if (res.data.rs !== '1') {
           console.log(res.data.rs)
+          this.loading = false
+          this.error = true
         } else {
           console.log('querySportsHalls', res.data.querySportsHalls)
           let hallList = res.data.querySportsHalls
-          this.newList = hallList.map((item, index) => {
-            if (item.venuePhoto) {
-              item.venuePhoto = `${BASE_DOMAIN}/socketServer/images/cardMall/imgsrc/${item.venuePhoto}`
-            }
-            if (item.address) {
-              this.mapDistance(item.address, index)
-            }
-            return {
-              ...item,
-              distance: 0,
-            }
-          })
+          // this.newList = hallList.map((item, index) => {
+          //   if (item.venuePhoto) {
+          //     item.venuePhoto = `${BASE_DOMAIN}/socketServer/images/cardMall/imgsrc/${item.venuePhoto}`
+          //   }
+          //   if (item.address) {
+          //     this.mapDistance(item.address, index)
+          //   }
+          //   return {
+          //     ...item,
+          //     distance: 0,
+          //   }
+          // })
+          this.newList = this.handleLists(hallList)
           // this.newList = this.newList.concat(hallList)
           useHomeStore().setSportsHalls(this.newList)
-          this.list = this.sportsHalls
+          this.list = this.newList
 
           console.log('list', this.list)
           if (
@@ -229,6 +245,22 @@ export default {
         }
       })
     },
+    // 处理lists
+    handleLists(lists) {
+      return lists.map((item, index) => {
+        if (item.venuePhoto) {
+          item.venuePhoto = `${BASE_DOMAIN}/socketServer/images/cardMall/imgsrc/${item.venuePhoto}`
+        }
+        if (item.address) {
+          this.mapDistance(item.address, index)
+        }
+        return {
+          ...item,
+          distance: 0,
+        }
+      })
+    },
+    onSearch() {},
   },
 }
 </script>
