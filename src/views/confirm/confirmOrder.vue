@@ -221,13 +221,19 @@ export default {
   },
   watch: {},
   created() {
-    console.log('currentSportHall:', this.currentSportHall)
-    console.log('currentArea:', this.currentArea)
-    console.log('currentAreaSite:', this.currentAreaSite)
-    console.log('subscribeDate:', this.subscribeDate)
-    console.log('subscribeTimeSlot:', this.subscribeTimeSlot)
+    let userName = window.localStorage.getItem('userNameStorage')
+    let userPhone = window.localStorage.getItem('userPhoneStorage')
+    if (userName && userPhone) {
+      this.userName = userName
+      this.userPhone = userPhone
+      this.isSave = true
+      this.isReadonly = true
+    }else{
+      this.isSave = false
+      this.isReadonly = false
+    }
 
-    this.getCookie()
+    // this.getCookie()
     this.getOrderPrice()
   },
   mounted() {},
@@ -237,11 +243,18 @@ export default {
       this.isSave = false
       this.userName = ''
       this.userPhone = ''
+      window.localStorage.removeItem('userNameStorage')
+      window.localStorage.removeItem('userPhoneStorage')
       this.clearCookie()
     },
     userSubmit(e) {
-      console.log('userSubmit:', e)
-      this.setCookie(this.userName, this.userPhone, 365)
+      // 存在localStorage中
+      window.localStorage.setItem('userNameStorage', this.userName)
+      window.localStorage.setItem('userPhoneStorage', this.userPhone)
+      // console.log('userSubmit:', e)
+      // 用户名先进行url编码
+      // let encodeStr = encodeURIComponent(this.userName)
+      // this.setCookie(encodeStr, this.userPhone, 1)
       this.isReadonly = true
       this.isSave = true
     },
@@ -269,7 +282,8 @@ export default {
           var arr2 = arr[i].split('=') //再次切割
           //判断查找相对应的值
           if (arr2[0] == 'contacts') {
-            this.userName = arr2[1] //保存到保存数据的地方
+            let decodeStr = decodeURIComponent(arr2[1])
+            this.userName = decodeStr //保存到保存数据的地方
           } else if (arr2[0] == 'contactsPhone') {
             this.userPhone = arr2[1]
           }
@@ -349,7 +363,7 @@ export default {
     },
     orderSubmit() {
       if (this.userName && this.userPhone) {
-        this.setCookie(this.userName, this.userPhone, 365)
+        // this.setCookie(this.userName, this.userPhone, 365)
         this.isReadonly = true
         this.isSave = true
       } else {
@@ -371,8 +385,8 @@ export default {
           productName: this.currentArea.siteType + '出租',
           srlID: this.currentArea.venueName,
           remark: '',
-          receiverName: this.userName ? this.userName : '',
-          mobile: this.userPhone ? this.userPhone : '',
+          receiverName: this.userName,
+          mobile: this.userPhone,
         },
         recList: [
           {
