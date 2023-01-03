@@ -69,7 +69,7 @@ Vue.prototype.stringToHex = function (str) {
 Vue.prototype.getPK = function () {
   var that = this
   this.$http
-    .post('http://www.paytunnel.cn/carRentalServerRH/app/getPK')
+    .post('https://www.paytunnel.cn/carRentalServerRH/app/getPK')
     .then(function (response) {
       //请求成功
       var result = response.data
@@ -118,11 +118,7 @@ Vue.prototype.checklogin = function (callback) {
       storage.removeItem('adminMemberID')
       storage.removeItem('adminNickName')
       storage.removeItem('userAdmin')
-      console.log(
-        '登录过期',
-        'adminMemberID',
-        window.localStorage.getItem('adminMemberID')
-      )
+      console.log('登录过期', 'adminMemberID', window.localStorage.getItem('adminMemberID'))
       Dialog.alert({
         title: '提示',
         message: '登录过期,请重新登录',
@@ -187,13 +183,7 @@ Vue.prototype.wxConfig = function () {
         timestamp: timestamp,
         nonceStr: nonceStr,
         signature: signature,
-        jsApiList: [
-          'onMenuShareAppMessage',
-          'addCard',
-          'scanQRCode',
-          'getLocation',
-          'openLocation',
-        ],
+        jsApiList: ['onMenuShareAppMessage', 'addCard', 'scanQRCode', 'getLocation', 'openLocation'],
       })
     })
     .catch(function (error) {
@@ -233,27 +223,18 @@ Vue.prototype.login = function (callback) {
   let url = '/currencyLogin/login'
   console.log('param::' + param)
   if (param.indexOf('appid') != -1) {
-    appid_REALTERMTYPE_REALUSERNAME = param.substring(
-      param.indexOf('=') + 1,
-      param.indexOf('code') - 1
-    )
+    appid_REALTERMTYPE_REALUSERNAME = param.substring(param.indexOf('=') + 1, param.indexOf('code') - 1)
 
     appid = appid_REALTERMTYPE_REALUSERNAME.split('&')[0]
     REALTERMTYPE = appid_REALTERMTYPE_REALUSERNAME.split('&')[1]
     REALUSERNAME = appid_REALTERMTYPE_REALUSERNAME.split('&')[2]
     storage.setItem('appid', appid)
-    code = param.substring(
-      param.indexOf('code') + 5,
-      param.indexOf('state') - 1
-    )
+    code = param.substring(param.indexOf('code') + 5, param.indexOf('state') - 1)
     console.log('appid::' + appid)
     console.log('code::' + code)
     // REALTERMTYPE = '微信预约点餐公众号'
     url = url + '?code=' + code + '&appid=' + appid_REALTERMTYPE_REALUSERNAME
-    storage.setItem(
-      'appid_REALTERMTYPE_REALUSERNAME',
-      appid_REALTERMTYPE_REALUSERNAME
-    )
+    storage.setItem('appid_REALTERMTYPE_REALUSERNAME', appid_REALTERMTYPE_REALUSERNAME)
   }
   if (appid.length < 18) {
     // 解决分享过来时获取不到appid的问题,从分享登录时存入sessionStorage中重新获取

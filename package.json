@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "commit": "cz",
-    "deployment": "vue-cli-service build && rm -rf ~/tomcat7/webapps/venueReservationMobile/* && cp -rf ./dist/* ~/tomcat7/webapps/venueReservationMobile/ && echo '--部署完成-- [http://www.paytunnel.cn/venueReservationMobile]'"
+    "deployment": "vue-cli-service build && rm -rf ~/tomcat7/webapps/venueReservationMobile/* && cp -rf ./dist/* ~/tomcat7/webapps/venueReservationMobile/ && echo '--部署完成-- [https://www.paytunnel.cn/venueReservationMobile]'"
   },
   "dependencies": {
     "@vant/area-data": "^1.2.4",
